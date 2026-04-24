@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body class="no-nav no-header">
+  <div class="auth-wrap">
+    <div class="auth-card anim-slide">
+      <div class="auth-logo">
+        <span class="a-main">6726</span><span class="a-dot">.</span><span class="a-bet">Bet</span>
+      </div>
+      <div class="auth-sub">Crie sua conta em segundos</div>
+
+      <form id="reg-form" class="stack">
+        <div class="field">
+          <label>Apelido (nickname)</label>
+          <input type="text" id="nickname" placeholder="Seu nome aqui" required maxlength="24" />
+        </div>
+        <div class="field">
+          <label>Usuário</label>
+          <input type="text" id="username" placeholder="usuario123" required autocomplete="username" />
+          <div class="help">Letras, números e . _ -</div>
+        </div>
+        <div class="field">
+          <label>E-mail (opcional)</label>
+          <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" id="password" placeholder="Mínimo 4 caracteres" required autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label>Confirmar senha</label>
+          <input type="password" id="confirm" placeholder="Repita a senha" required autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn primary full large" id="submit-btn">Criar conta</button>
+      </form>
+
+      <div class="center mt-16 small muted">
+        Já tem conta? <a href="login.html">Entrar</a>
+      </div>
+      <div class="divider"></div>
+      <div class="center tiny muted">Ao criar uma conta você aceita os termos da 6726.Bet.</div>
+    </div>
+  </div>
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (function () {
+      App.boot({ header: false, nav: false, requireAuth: false });
+      if (Auth.getSession()) { location.replace("dashboard.html"); return; }
+      var form = document.getElementById("reg-form");
+      var btn = document.getElementById("submit-btn");
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        btn.disabled = true; btn.textContent = "Criando...";
+        var payload = {
+          nickname: document.getElementById("nickname").value.trim(),
+          username: document.getElementById("username").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          password: document.getElementById("password").value,
+          confirm: document.getElementById("confirm").value,
+        };
+        var res = await Auth.register(payload);
+        if (!res.ok) {
+          U.toast(res.error, "error");
+          btn.disabled = false; btn.textContent = "Criar conta";
+          form.classList.add("anim-shake");
+          setTimeout(function () { form.classList.remove("anim-shake"); }, 400);
+          return;
+        }
+        U.toast("Conta criada! Bônus de cadastro creditado.", "success", 2400);
+        U.sound.win();
+        U.coinShower(16);
+        setTimeout(function () { location.replace("dashboard.html"); }, 900);
+      });
+    })();
+  </script>
+</body>
+</html>

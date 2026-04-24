@@ -1,0 +1,15 @@
+{
+  "_doc": "Estrutura de referência — persistência real em LocalStorage ('6726bet.transactions').",
+  "_schema": {
+    "id": "string",
+    "username": "string",
+    "type": "deposit | withdraw | bet | win | bonus",
+    "amount": "number",
+    "label": "string",
+    "game_id": "string (opcional)",
+    "created_at": "timestamp"
+  },
+  "_example": [
+    { "id": "tx_123", "username": "anthony", "type": "bonus", "amount": 10, "label": "Bônus de cadastro", "created_at": 0 }
+  ]
+}

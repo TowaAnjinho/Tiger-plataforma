@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogos — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+  <div class="container section">
+    <div class="row mb-12">
+      <a class="back-btn" href="dashboard.html">←</a>
+      <h2 style="margin:0">Jogos</h2>
+    </div>
+
+    <div class="card mb-12">
+      <input type="search" id="q" placeholder="🔎 Pesquisar jogos ou marcas..." />
+    </div>
+
+    <div class="section-title">
+      <h3>Marcas</h3>
+      <span class="small muted"><span id="brand-count">0</span> marcas</span>
+    </div>
+    <div class="grid grid-3" id="brands-grid"></div>
+
+    <div class="section-title mt-24">
+      <h3>Todos os jogos</h3>
+      <span class="small muted"><span id="game-count">0</span> jogos</span>
+    </div>
+    <div class="game-grid" id="all-grid"></div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/games.js"></script>
+  <script src="../games/tiger.js"></script>
+  <script src="../games/rabbit.js"></script>
+  <script src="../games/tigrinho.js"></script>
+  <script src="../games/pg.js"></script>
+  <script src="../games/spin.js"></script>
+  <script src="../games/dragon.js"></script>
+  <script src="../games/fortune.js"></script>
+  <script>
+    (function () {
+      App.boot({ requireAuth: true, nav: "inicio" });
+
+      var brands = Games.listBrands();
+      document.getElementById("brand-count").textContent = brands.length;
+      var bg = document.getElementById("brands-grid");
+      brands.forEach(function (b) {
+        var el = U.el("a", {
+          cls: "brand-card",
+          attrs: { href: "jogos2.html?brand=" + encodeURIComponent(b.key) },
+          style: { background: "linear-gradient(135deg," + b.color + "55, #0a0a12)" }
+        });
+        el.innerHTML =
+          '<div class="brand-bg">' + b.icon + '</div>' +
+          '<div class="brand-label">' + U.escapeHtml(b.name) + ' <small>' + b.games.length + ' jogos</small></div>';
+        bg.appendChild(el);
+      });
+
+      var all = Games.allGames();
+      document.getElementById("game-count").textContent = all.length;
+      var fg = document.getElementById("all-grid");
+
+      function render(list) {
+        fg.innerHTML = "";
+        if (!list.length) {
+          fg.innerHTML = '<div class="muted center small" style="grid-column:1/-1">Nenhum jogo encontrado.</div>';
+          return;
+        }
+        list.forEach(function (g) {
+          var el = U.el("a", {
+            cls: "game-card",
+            attrs: { href: "jogos3.html?id=" + encodeURIComponent(g.id) }
+          });
+          el.innerHTML =
+            '<div class="gc-art">' + g.icon + '</div>' +
+            '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">' + U.escapeHtml(g.brandName) + '</div></div>';
+          fg.appendChild(el);
+        });
+      }
+      render(all);
+
+      document.getElementById("q").addEventListener("input", U.debounce(function (e) {
+        var q = e.target.value.trim();
+        render(q ? Games.search(q) : all);
+      }, 150));
+    })();
+  </script>
+</body>
+</html>

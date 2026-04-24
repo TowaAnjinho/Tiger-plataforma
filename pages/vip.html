@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP & Bônus — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+  <div class="container section">
+    <div class="tabs mb-16" id="tabs">
+      <div class="tab active" data-tab="vip">👑 VIP</div>
+      <div class="tab" data-tab="bonus">🎁 Bônus</div>
+      <div class="tab" data-tab="events">🎉 Eventos</div>
+    </div>
+
+    <!-- VIP -->
+    <section id="tab-vip">
+      <div class="vip-hero anim-slide">
+        <div class="v-level">NÍVEL ATUAL</div>
+        <div class="v-name" id="vip-name">VIP 0 — Bronze</div>
+        <div class="v-progress"><div class="v-bar" id="vip-bar" style="width:0%"></div></div>
+        <div class="v-stats">
+          <span id="vip-pts">0 pts</span>
+          <span id="vip-next">Próximo: 500 pts</span>
+        </div>
+      </div>
+
+      <div class="section-title mt-16"><h3>Níveis</h3></div>
+      <div class="vip-levels" id="vip-levels"></div>
+
+      <div class="card mt-16">
+        <div class="card-title">Como ganhar pontos VIP?</div>
+        <div class="small muted">Você ganha 1 ponto a cada R$ 1 apostado (e metade em jogadas sem vitória). Cada 500 pontos aumenta seu nível e desbloqueia benefícios.</div>
+      </div>
+    </section>
+
+    <!-- BONUS -->
+    <section id="tab-bonus" class="hidden">
+      <div class="bonus-item anim-slide">
+        <div class="b-ico">🎁</div>
+        <div class="b-body">
+          <div class="b-t">Bônus diário</div>
+          <div class="b-d" id="daily-info">Resgate uma vez por dia.</div>
+        </div>
+        <button class="btn primary" id="claim-daily">Resgatar</button>
+      </div>
+
+      <div class="bonus-item mt-12">
+        <div class="b-ico">🌟</div>
+        <div class="b-body">
+          <div class="b-t">Bônus de cadastro</div>
+          <div class="b-d" id="signup-info">Oferta para novos jogadores.</div>
+        </div>
+        <span class="badge gold">Automático</span>
+      </div>
+
+      <div class="bonus-item mt-12">
+        <div class="b-ico">💎</div>
+        <div class="b-body">
+          <div class="b-t">Cashback VIP</div>
+          <div class="b-d">Quanto maior seu nível VIP, maior o cashback semanal (ativado pelo admin).</div>
+        </div>
+        <span class="badge magenta" id="vip-cashback">Nível 0</span>
+      </div>
+    </section>
+
+    <!-- EVENTOS -->
+    <section id="tab-events" class="hidden">
+      <div class="card">
+        <div class="card-title">Eventos ativos</div>
+        <div id="events-list">
+          <div class="muted small">Nenhum evento no momento. Fique de olho!</div>
+        </div>
+      </div>
+      <div class="card mt-12">
+        <div class="card-title">🎯 Desafios</div>
+        <div class="stack">
+          <div class="row space">
+            <div><div class="bold">Dê 10 giros hoje</div><div class="small muted">Qualquer jogo</div></div>
+            <div class="badge cyan" id="challenge-1">0/10</div>
+          </div>
+          <div class="row space">
+            <div><div class="bold">Ganhe R$ 50 em um único giro</div><div class="small muted">Prêmio: +R$ 5</div></div>
+            <div class="badge gold" id="challenge-2">Pendente</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (function () {
+      var user = App.boot({ requireAuth: true, nav: "vip", showBalance: true });
+      if (!user) return;
+      var cfg = DB.getConfig();
+
+      // Tabs
+      function showTab(key) {
+        ["vip", "bonus", "events"].forEach(function (k) {
+          document.getElementById("tab-" + k).classList.toggle("hidden", k !== key);
+        });
+        document.querySelectorAll("#tabs .tab").forEach(function (t) {
+          t.classList.toggle("active", t.getAttribute("data-tab") === key);
+        });
+      }
+      document.querySelectorAll("#tabs .tab").forEach(function (t) {
+        t.addEventListener("click", function () { showTab(t.getAttribute("data-tab")); });
+      });
+      if (location.hash === "#bonus") showTab("bonus");
+      if (location.hash === "#events") showTab("events");
+
+      // VIP
+      var names = ["Bronze", "Prata", "Ouro", "Platina", "Safira", "Rubi", "Esmeralda", "Diamante", "Mestre", "Lendário", "Eterno"];
+      var pts = user.vip_points || 0;
+      var lvl = Math.min(10, Math.floor(pts / 500));
+      var remaining = lvl < 10 ? (500 - (pts % 500)) : 0;
+      var progressPct = lvl < 10 ? Math.round(((pts % 500) / 500) * 100) : 100;
+      document.getElementById("vip-name").textContent = "VIP " + lvl + " — " + names[lvl];
+      document.getElementById("vip-pts").textContent = pts + " pts";
+      document.getElementById("vip-next").textContent = lvl < 10 ? ("Próximo: " + remaining + " pts") : "Nível máximo";
+      document.getElementById("vip-bar").style.width = progressPct + "%";
+      document.getElementById("vip-cashback").textContent = "Nível " + lvl;
+
+      var vipWrap = document.getElementById("vip-levels");
+      for (var i = 0; i <= 10; i++) {
+        var el = U.el("div", { cls: "vip-level" + (i === lvl ? " current" : "") });
+        el.innerHTML = '<div class="ll">' + i + '</div><div class="ln">' + names[i] + '</div><div class="lb">Cashback ' + (i * 2) + '%</div>';
+        vipWrap.appendChild(el);
+      }
+
+      // Bônus
+      var claims = DB.getBonusClaims()[user.username] || {};
+      var today = (new Date()).toISOString().slice(0, 10);
+      var canDaily = cfg.bonuses_enabled && claims.daily !== today;
+      document.getElementById("daily-info").textContent = canDaily
+        ? "Disponível agora: +" + U.formatBRL(cfg.daily_bonus)
+        : "Já resgatado hoje. Volte amanhã!";
+      var btn = document.getElementById("claim-daily");
+      btn.disabled = !canDaily;
+      if (!canDaily) btn.textContent = "Indisponível";
+      btn.addEventListener("click", function () {
+        if (!cfg.bonuses_enabled) { U.toast("Bônus desabilitados pelo admin.", "warn"); return; }
+        var r = DB.claimDaily(user.username, cfg.daily_bonus);
+        if (!r.ok) { U.toast(r.reason, "warn"); return; }
+        U.toast("Bônus creditado!", "success");
+        U.coinShower(12); U.sound.win();
+        setTimeout(function () { location.reload(); }, 700);
+      });
+
+      document.getElementById("signup-info").textContent = user.bonus_claimed_signup
+        ? "Recebido ao criar a conta."
+        : ("Disponível ao criar a conta: +" + U.formatBRL(cfg.signup_bonus));
+
+      // Desafios
+      var hist = DB.getGameHistory(user.username, 1000).filter(function (h) {
+        return (new Date(h.ts)).toISOString().slice(0, 10) === today;
+      });
+      document.getElementById("challenge-1").textContent = Math.min(10, hist.length) + "/10";
+      var bigWin = hist.some(function (h) { return h.win >= 50; });
+      document.getElementById("challenge-2").textContent = bigWin ? "Completo" : "Pendente";
+
+      // Eventos
+      var ev = document.getElementById("events-list");
+      if (cfg.events_enabled) {
+        ev.innerHTML =
+          '<div class="bonus-item"><div class="b-ico">🔥</div><div class="b-body"><div class="b-t">Happy Hour — Fim de semana</div><div class="b-d">Chance de vitória aumentada em jogos Tigrinho e Dragon.</div></div></div>' +
+          '<div class="bonus-item mt-12"><div class="b-ico">🎊</div><div class="b-body"><div class="b-t">Missão Fortune</div><div class="b-d">Aposte R$ 100 na marca Fortune para receber R$ 10.</div></div></div>';
+      } else {
+        ev.innerHTML = '<div class="muted small">Eventos temporariamente desabilitados.</div>';
+      }
+    })();
+  </script>
+</body>
+</html>
