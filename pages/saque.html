@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sacar — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+  <div class="container section">
+    <div class="row mb-12">
+      <a class="back-btn" href="perfil.html">←</a>
+      <h2 style="margin:0">Sacar</h2>
+    </div>
+
+    <div class="card mb-12">
+      <div class="bold mb-8">Solicitação de saque via PIX</div>
+      <div class="small muted">Informe seus dados PIX. O saque é processado manualmente pelo admin em até 24h.</div>
+      <div class="row space mt-12">
+        <div>
+          <div class="small muted">Saldo atual</div>
+          <div class="bold" style="color:var(--gold); font-size:18px" id="cur-bal">R$ 0,00</div>
+        </div>
+        <div>
+          <div class="small muted">Saque min/max</div>
+          <div class="small" id="limits">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-12">
+      <div class="card-title">Solicitar saque</div>
+      <div class="field mt-8">
+        <label>Chave PIX</label>
+        <input type="text" id="pix-key" placeholder="CPF, e-mail, telefone ou aleatória" required />
+      </div>
+      <div class="field mt-8">
+        <label>Valor (R$)</label>
+        <input type="number" id="amount" min="1" step="0.01" placeholder="0,00" required />
+      </div>
+      <button class="btn primary full mt-12" id="send-req">Solicitar saque</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Conversa com o suporte</div>
+      <div id="chat-root"></div>
+    </div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/chat.js"></script>
+  <script>
+    (function () {
+      var user = App.boot({ requireAuth: true, nav: "perfil", showBalance: true });
+      if (!user) return;
+      var cfg = DB.getConfig();
+      document.getElementById("cur-bal").textContent = U.formatBRL(user.balance);
+      document.getElementById("limits").textContent = U.formatBRL(cfg.min_withdraw) + " / " + U.formatBRL(cfg.max_withdraw);
+
+      var thread = DB.getOrCreateThread(user.username, "SAQUE");
+      if (!thread.messages.length) {
+        DB.postMessage(thread.id, "system", "Solicite seu saque informando a chave PIX e o valor. O administrador processará manualmente.");
+      }
+      Chat.renderThread(document.getElementById("chat-root"), thread.id, "user");
+
+      document.getElementById("send-req").addEventListener("click", function () {
+        var pk = document.getElementById("pix-key").value.trim();
+        var amt = U.parseBRL(document.getElementById("amount").value);
+        if (!pk) { U.toast("Informe a chave PIX.", "error"); return; }
+        if (!(amt > 0)) { U.toast("Valor inválido.", "error"); return; }
+        if (amt < cfg.min_withdraw) { U.toast("Abaixo do saque mínimo.", "warn"); return; }
+        if (amt > cfg.max_withdraw) { U.toast("Acima do saque máximo.", "warn"); return; }
+        var cu = DB.getUser(user.username);
+        if (cu.balance < amt) { U.toast("Saldo insuficiente.", "error"); return; }
+
+        // Debita imediatamente e aguarda confirmação via chat (admin pode reverter se necessário)
+        DB.adjustBalance(user.username, -amt);
+        DB.addTransaction({ username: user.username, type: "withdraw", amount: amt, label: "Saque solicitado (pendente)" });
+        DB.postMessage(thread.id, "user", "Solicitação de saque: " + U.formatBRL(amt) + "\nChave PIX: " + pk);
+        DB.addNotification("__admin__", { title: "Novo saque pendente", body: thread.id + " • " + U.formatBRL(amt), kind: "warn" });
+        U.toast("Solicitação enviada. Saldo reservado.", "success");
+        document.getElementById("amount").value = "";
+        App.updateHeaderBalance();
+        Chat.renderThread(document.getElementById("chat-root"), thread.id, "user");
+      });
+    })();
+  </script>
+</body>
+</html>

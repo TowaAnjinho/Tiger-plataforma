@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a12" />
+  <meta name="description" content="6726.Bet — Plataforma oficial de apostas online" />
+  <title>6726.Bet — Carregando…</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a0a12'/%3E%3Ctext x='32' y='40' font-family='Arial' font-size='24' font-weight='900' text-anchor='middle' fill='%23ffd65a'%3E67%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+</head>
+<body class="splash-body">
+  <div class="splash">
+    <div class="splash-logo">
+      <span class="splash-logo-main">6726</span><span class="splash-logo-dot">.</span><span class="splash-logo-bet">Bet</span>
+    </div>
+    <div class="splash-subtitle">Plataforma oficial de propriedade de Anthony Ramos : bernardino</div>
+    <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+    <noscript>
+      <p style="color:#ff5c5c;margin-top:24px">Este site requer JavaScript para funcionar.</p>
+    </noscript>
+  </div>
+  <script src="js/utils.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function bootstrap() {
+      try {
+        DB.init();
+        setTimeout(function () {
+          var session = Auth.getSession();
+          if (session && session.username) {
+            window.location.replace('pages/dashboard.html');
+          } else {
+            window.location.replace('pages/login.html');
+          }
+        }, 900);
+      } catch (e) {
+        console.error('Falha na inicialização:', e);
+        document.body.innerHTML = '<div style="color:#fff;padding:24px;font-family:sans-serif">Erro ao iniciar a plataforma. Recarregue a página.</div>';
+      }
+    })();
+  </script>
+</body>
+</html>

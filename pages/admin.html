@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body class="no-nav">
+  <div class="container section admin-wrap">
+    <div class="row space mb-12">
+      <div>
+        <h2 style="margin:0">Painel Administrativo</h2>
+        <div class="small muted">6726.Bet • Anthony Ramos : bernardino</div>
+      </div>
+      <button class="btn small secondary" id="logout">Sair</button>
+    </div>
+
+    <div class="tabs mb-16" id="tabs">
+      <div class="tab active" data-tab="kpis">📊 Economia</div>
+      <div class="tab" data-tab="users">👥 Usuários</div>
+      <div class="tab" data-tab="chats">💬 Chats</div>
+      <div class="tab" data-tab="txs">💸 Transações</div>
+      <div class="tab" data-tab="cfg">⚙️ Config</div>
+    </div>
+
+    <section id="tab-kpis">
+      <div class="admin-grid-kpi" id="kpis"></div>
+      <div class="card mt-16">
+        <div class="card-title">Top ganhadores</div>
+        <div id="top-winners"></div>
+      </div>
+    </section>
+
+    <section id="tab-users" class="hidden">
+      <div class="card">
+        <div class="row space mb-12">
+          <input type="search" id="q-user" placeholder="Filtrar usuários..." style="max-width:280px" />
+          <button class="btn small primary" id="new-user">+ Novo usuário</button>
+        </div>
+        <div id="users-table"></div>
+      </div>
+    </section>
+
+    <section id="tab-chats" class="hidden">
+      <div class="grid" style="grid-template-columns: 1fr 2fr; gap:12px" id="chats-layout">
+        <div class="card" style="max-height:70vh; overflow:auto">
+          <div class="card-title">Conversas</div>
+          <div id="chats-list"></div>
+        </div>
+        <div class="card" id="chat-panel">
+          <div class="muted small center">Selecione uma conversa.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-txs" class="hidden">
+      <div class="card">
+        <div class="card-title">Últimas transações</div>
+        <div id="tx-table"></div>
+      </div>
+    </section>
+
+    <section id="tab-cfg" class="hidden">
+      <div class="card">
+        <div class="card-title">Configurações da plataforma</div>
+        <div id="cfg-list"></div>
+      </div>
+      <div class="card mt-12">
+        <div class="card-title">Zona de perigo</div>
+        <div class="small muted mb-12">Ações irreversíveis.</div>
+        <div class="grid grid-2" style="gap:8px">
+          <button class="btn danger" id="reset-all">Apagar tudo</button>
+          <button class="btn secondary" id="export-all">Exportar JSON</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/chat.js"></script>
+  <script>
+    (function () {
+      App.boot({ requireAdmin: true, nav: false, showBalance: false, showLogout: false });
+      if (!Auth.isAdmin()) return;
+
+      // Tabs
+      function showTab(key) {
+        ["kpis", "users", "chats", "txs", "cfg"].forEach(function (k) {
+          document.getElementById("tab-" + k).classList.toggle("hidden", k !== key);
+        });
+        document.querySelectorAll("#tabs .tab").forEach(function (t) {
+          t.classList.toggle("active", t.getAttribute("data-tab") === key);
+        });
+        if (key === "kpis") renderKpis();
+        if (key === "users") renderUsers();
+        if (key === "chats") renderChats();
+        if (key === "txs") Admin.renderTransactions(document.getElementById("tx-table"), 200);
+        if (key === "cfg") Admin.renderConfig(document.getElementById("cfg-list"));
+      }
+      document.querySelectorAll("#tabs .tab").forEach(function (t) {
+        t.addEventListener("click", function () { showTab(t.getAttribute("data-tab")); });
+      });
+
+      function renderKpis() {
+        Admin.renderKpis(document.getElementById("kpis"));
+        App.renderLeaderboard(document.getElementById("top-winners"), 10);
+      }
+      function renderUsers() {
+        var q = document.getElementById("q-user").value.trim();
+        Admin.renderUsers(document.getElementById("users-table"), q);
+      }
+
+      var currentCleanup = null;
+      function renderChats() {
+        var list = document.getElementById("chats-list");
+        Chat.renderList(list, null, "admin", function (threadId) {
+          if (currentCleanup) currentCleanup();
+          var panel = document.getElementById("chat-panel");
+          panel.innerHTML = "";
+          currentCleanup = Chat.renderThread(panel, threadId, "admin");
+        });
+      }
+
+      document.getElementById("logout").addEventListener("click", function () {
+        Auth.logout(); location.replace("login.html");
+      });
+      document.getElementById("q-user").addEventListener("input", U.debounce(renderUsers, 150));
+      document.getElementById("new-user").addEventListener("click", async function () {
+        var un = await U.prompt("Nome de usuário:", { title: "Novo usuário" });
+        if (!un) return;
+        var pw = await U.prompt("Senha inicial (mín 4):");
+        if (!pw) return;
+        var r = await Auth.register({ nickname: un, username: un, password: pw, confirm: pw });
+        if (!r.ok) U.toast(r.error, "error");
+        else { U.toast("Usuário criado.", "success"); Auth.logout(); DB.setSession({ username: DB.getConfig().admin_username, role: "admin" }); renderUsers(); }
+      });
+      document.getElementById("reset-all").addEventListener("click", async function () {
+        var ok = await U.confirm("Apagar TODOS os dados (usuários, transações, chats)? Isto não pode ser desfeito.");
+        if (!ok) return;
+        DB.resetAll();
+        Auth.logout();
+        location.replace("login.html");
+      });
+      document.getElementById("export-all").addEventListener("click", function () {
+        var data = DB.exportAll();
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "6726bet-export-" + Date.now() + ".json";
+        a.click();
+      });
+
+      showTab("kpis");
+    })();
+  </script>
+</body>
+</html>

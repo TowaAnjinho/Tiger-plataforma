@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Início — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+  <div class="container section">
+
+    <div class="hero-balance anim-slide" id="hero-balance">
+      <div class="hb-label">Saldo disponível</div>
+      <div class="hb-value" id="hb-value">R$ 0,00</div>
+      <div class="row small muted">
+        <span id="hb-vip-badge" class="badge magenta">VIP 0</span>
+        <span id="hb-user" class="muted"></span>
+      </div>
+      <div class="hb-actions">
+        <a href="deposito.html" class="btn primary">💰 Depositar</a>
+        <a href="saque.html" class="btn secondary">💸 Sacar</a>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h3>Recompensas</h3>
+      <a href="vip.html#bonus">Ver mais</a>
+    </div>
+    <div class="grid grid-2">
+      <button class="card glow" id="btn-daily" style="text-align:left">
+        <div class="row space">
+          <div>
+            <div class="bold">Bônus diário</div>
+            <div class="small muted" id="daily-status">Resgate diariamente</div>
+          </div>
+          <div style="font-size:28px">🎁</div>
+        </div>
+      </button>
+      <a class="card" href="vip.html" style="text-align:left">
+        <div class="row space">
+          <div>
+            <div class="bold">Torne-se VIP</div>
+            <div class="small muted">Aposte e suba de nível</div>
+          </div>
+          <div style="font-size:28px">👑</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="section-title">
+      <h3>Marcas</h3>
+      <a href="jogos.html">Ver todas</a>
+    </div>
+    <div class="grid grid-3" id="brands-grid"></div>
+
+    <div class="section-title mt-24">
+      <h3>Jogos em destaque</h3>
+      <a href="jogos.html">Todos</a>
+    </div>
+    <div class="game-grid" id="featured-grid"></div>
+
+    <div class="section-title mt-24">
+      <h3>🏆 Top ganhadores</h3>
+    </div>
+    <div id="leaderboard"></div>
+
+    <div class="section-title mt-24">
+      <h3>Últimas jogadas</h3>
+    </div>
+    <div id="history-list"></div>
+
+    <div class="divider"></div>
+    <div class="center small muted">6726.Bet © — Jogue com responsabilidade.</div>
+
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/games.js"></script>
+  <script src="../games/tiger.js"></script>
+  <script src="../games/rabbit.js"></script>
+  <script src="../games/tigrinho.js"></script>
+  <script src="../games/pg.js"></script>
+  <script src="../games/spin.js"></script>
+  <script src="../games/dragon.js"></script>
+  <script src="../games/fortune.js"></script>
+  <script>
+    (function () {
+      var user = App.boot({ requireAuth: true, nav: "inicio", showBalance: true });
+      if (!user) return;
+      if (Auth.isAdmin()) { location.replace("admin.html"); return; }
+
+      // Hero
+      document.getElementById("hb-value").textContent = U.formatBRL(user.balance);
+      var vipLevel = Math.min(10, Math.floor((user.vip_points || 0) / 500));
+      document.getElementById("hb-vip-badge").textContent = "VIP " + vipLevel;
+      document.getElementById("hb-user").textContent = "Olá, " + U.escapeHtml(user.nickname || user.username);
+
+      // Bônus diário
+      var claims = DB.getBonusClaims()[user.username] || {};
+      var today = (new Date()).toISOString().slice(0, 10);
+      var cfg = DB.getConfig();
+      var canDaily = cfg.bonuses_enabled && claims.daily !== today;
+      var ds = document.getElementById("daily-status");
+      ds.textContent = canDaily ? ("Resgate agora +" + U.formatBRL(cfg.daily_bonus)) : "Já resgatado hoje";
+      document.getElementById("btn-daily").addEventListener("click", function () {
+        if (!cfg.bonuses_enabled) { U.toast("Bônus desabilitados pelo admin.", "warn"); return; }
+        var r = DB.claimDaily(user.username, cfg.daily_bonus);
+        if (!r.ok) U.toast(r.reason, "warn");
+        else {
+          U.toast("Bônus de " + U.formatBRL(cfg.daily_bonus) + " creditado!", "success");
+          U.coinShower(12); U.sound.win();
+          setTimeout(function () { location.reload(); }, 700);
+        }
+      });
+
+      // Brands grid
+      var brands = Games.listBrands();
+      var bg = document.getElementById("brands-grid");
+      brands.forEach(function (b) {
+        var el = U.el("a", {
+          cls: "brand-card",
+          attrs: { href: "jogos2.html?brand=" + encodeURIComponent(b.key) },
+          style: { background: "linear-gradient(135deg," + b.color + "55, #0a0a12)" }
+        });
+        el.innerHTML =
+          '<div class="brand-bg">' + b.icon + '</div>' +
+          '<div class="brand-label">' + U.escapeHtml(b.name) + ' <small>' + b.games.length + ' jogos</small></div>';
+        bg.appendChild(el);
+      });
+
+      // Featured — 8 random games
+      var all = Games.allGames().slice();
+      for (var i = all.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = all[i]; all[i] = all[j]; all[j] = t;
+      }
+      var fg = document.getElementById("featured-grid");
+      all.slice(0, 12).forEach(function (g) {
+        var el = U.el("a", {
+          cls: "game-card",
+          attrs: { href: "jogos3.html?id=" + encodeURIComponent(g.id) }
+        });
+        el.innerHTML =
+          '<div class="gc-ribbon">HOT</div>' +
+          '<div class="gc-art">' + g.icon + '</div>' +
+          '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">' + U.escapeHtml(g.brandName) + '</div></div>';
+        fg.appendChild(el);
+      });
+
+      // Leaderboard
+      App.renderLeaderboard(document.getElementById("leaderboard"), 6);
+
+      // History
+      var hist = DB.getGameHistory(user.username, 5);
+      var hl = document.getElementById("history-list");
+      if (!hist.length) {
+        hl.innerHTML = '<div class="muted small center">Nenhuma jogada ainda. <a href="jogos.html">Jogue agora</a>.</div>';
+      } else {
+        var wrap = U.el("div", { cls: "tx-list" });
+        hist.forEach(function (h) {
+          var profit = h.profit || (h.win - h.bet);
+          var win = profit > 0;
+          var el = U.el("div", { cls: "tx-item " + (win ? "win" : "bet") });
+          el.innerHTML =
+            '<div class="icon">' + (win ? "🏆" : "🎲") + '</div>' +
+            '<div class="body"><div class="t">' + U.escapeHtml(h.game_name) + '</div><div class="s">' + U.fmtDateTime(h.ts) + ' • aposta ' + U.formatBRL(h.bet) + '</div></div>' +
+            '<div class="amt">' + (win ? "+" : "") + U.formatBRL(profit) + '</div>';
+          wrap.appendChild(el);
+        });
+        hl.appendChild(wrap);
+      }
+    })();
+  </script>
+</body>
+</html>

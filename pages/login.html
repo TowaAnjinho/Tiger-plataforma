@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrar — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body class="no-nav no-header">
+  <div class="auth-wrap">
+    <div class="auth-card anim-slide">
+      <div class="auth-logo">
+        <span class="a-main">6726</span><span class="a-dot">.</span><span class="a-bet">Bet</span>
+      </div>
+      <div class="auth-sub">Plataforma oficial — Anthony Ramos : bernardino</div>
+
+      <form id="login-form" class="stack">
+        <div class="field">
+          <label for="username">Usuário</label>
+          <input type="text" id="username" autocomplete="username" placeholder="Seu usuário" required />
+          <div class="help" id="err-username"></div>
+        </div>
+        <div class="field">
+          <label for="password">Senha</label>
+          <input type="password" id="password" autocomplete="current-password" placeholder="Sua senha" required />
+          <div class="help" id="err-password"></div>
+        </div>
+        <button type="submit" class="btn primary full large" id="submit-btn">Entrar</button>
+      </form>
+
+      <div class="center mt-16 small muted">
+        Não tem conta? <a href="register.html">Criar conta</a>
+      </div>
+      <div class="divider"></div>
+      <div class="center tiny muted">
+        Apostas envolvem risco. Jogue com responsabilidade.<br>
+        © 6726.Bet
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (function () {
+      App.boot({ header: false, nav: false, requireAuth: false });
+      if (Auth.getSession()) {
+        var s = Auth.getSession();
+        location.replace(s.role === "admin" ? "admin.html" : "dashboard.html");
+        return;
+      }
+      var form = document.getElementById("login-form");
+      var btn = document.getElementById("submit-btn");
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.textContent = "Entrando...";
+        var u = document.getElementById("username").value.trim();
+        var p = document.getElementById("password").value;
+        var res = await Auth.login(u, p);
+        if (!res.ok) {
+          U.toast(res.error, "error");
+          btn.disabled = false;
+          btn.textContent = "Entrar";
+          form.classList.add("anim-shake");
+          setTimeout(function () { form.classList.remove("anim-shake"); }, 400);
+          return;
+        }
+        U.toast("Bem-vindo!", "success");
+        U.sound.coin();
+        setTimeout(function () {
+          location.replace(res.admin ? "admin.html" : "dashboard.html");
+        }, 400);
+      });
+    })();
+  </script>
+</body>
+</html>
