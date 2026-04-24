@@ -199,8 +199,9 @@
     var n = sorted.length;
     // payout3: 25, 18, 14, 10, 7, 5, 3  (exemplo)
     // Gera uma curva descendente baseada em n
-    var basePayouts3 = [40, 25, 15, 10, 7, 5, 3.5, 2.5, 2, 1.5];
-    var basePayouts2 = [3, 2, 1.5, 1.2, 1, 0.8, 0.6, 0.5, 0.4, 0.3];
+    // V2: Payouts aumentados ("ganhar mais ao ganhar") — prêmios até 80x na linha central
+    var basePayouts3 = [80, 50, 30, 20, 14, 10, 7, 5, 4, 3];
+    var basePayouts2 = [6, 4, 3, 2.2, 1.8, 1.4, 1, 0.8, 0.6, 0.5];
     return sorted.map(function (s, i) {
       var p3 = basePayouts3[Math.min(i, basePayouts3.length - 1)];
       var p2 = basePayouts2[Math.min(i, basePayouts2.length - 1)];

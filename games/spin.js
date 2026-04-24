@@ -22,7 +22,7 @@
       id: "spin-" + String(i + 1).padStart(2, "0"),
       name: "Spin " + themes[i],
       description: "SPIN — " + themes[i],
-      minBet: 1, maxBet: 500,
+      minBet: 0.10, maxBet: 500,
       rtp: 0.91 + (i % 6) * 0.006,
       symbols: symbols,
       theme: { bg: "linear-gradient(135deg, #2a0a3a, #0a0a12)", accent: "#9333ea" },

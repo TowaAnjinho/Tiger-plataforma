@@ -46,13 +46,22 @@
         return;
       }
       t.messages.forEach(function (m) {
-        var cls = "msg " + (m.from === role ? "me" : "them");
+        var mine = m.from === role;
+        var cls = "msg " + (mine ? "me" : "them");
         if (m.from === "system") cls = "msg them";
-        var d = U.el("div", {
-          cls: cls,
-          html: U.escapeHtml(m.text).replace(/\n/g, "<br>") +
-                '<span class="ts">' + U.fmtTime(m.ts) + (m.from === "system" ? " • sistema" : "") + "</span>"
-        });
+        var ava;
+        if (m.from === "admin" || m.from === "system") {
+          ava = (window.Assets ? Assets.emblem() : "");
+        } else {
+          ava = (window.Assets ? Assets.avatar(t.username) : "");
+        }
+        var avaImg = ava ? '<img class="avatar-img" src="' + ava + '" alt=""/>' : "";
+        var bubble =
+          '<div class="bubble">' +
+          U.escapeHtml(m.text).replace(/\n/g, "<br>") +
+          '<span class="ts">' + U.fmtTime(m.ts) + (m.from === "system" ? " • sistema" : (mine ? "" : " • suporte")) + "</span>" +
+          "</div>";
+        var d = U.el("div", { cls: cls, html: avaImg + bubble });
         body.appendChild(d);
       });
       body.scrollTop = body.scrollHeight;
@@ -108,11 +117,14 @@
         if (role === "admin" && !m.read_admin && m.from !== "admin") unread++;
       });
       var lastPreview = last ? (last.from === role ? "Você: " : "") + last.text : "Sem mensagens.";
+      var ava = window.Assets ? Assets.avatar(t.username) : "";
+      var avaImg = ava ? '<img class="avatar-img sm" src="' + ava + '" alt="" style="margin-right:10px"/>' : '<div class="ava">' + (t.type === "DEPOSITO" ? "D" : t.type === "SAQUE" ? "S" : "?") + '</div>';
+      var typeChip = '<span class="pill" style="margin-left:6px">' + (t.type || "CHAT") + '</span>';
       var div = U.el("div", {
         cls: "chat-list-item",
         html:
-          '<div class="ava">' + (t.type === "DEPOSITO" ? "D" : t.type === "SAQUE" ? "S" : "?") + '</div>' +
-          '<div class="meta"><div class="t">' + U.escapeHtml(t.id) + '</div><div class="p">' + U.escapeHtml(lastPreview).slice(0, 60) + '</div></div>' +
+          avaImg +
+          '<div class="meta"><div class="t">' + U.escapeHtml(t.id) + typeChip + '</div><div class="p">' + U.escapeHtml(lastPreview).slice(0, 60) + '</div></div>' +
           (unread ? '<div class="unread">' + unread + '</div>' : '')
       });
       div.addEventListener("click", function () { onOpen(t.id); });
