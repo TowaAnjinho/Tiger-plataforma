@@ -1,0 +1,63 @@
+/* Mobile-first — ajustes para tablets e desktop */
+
+@media (min-width: 480px) {
+  :root { --header-h: 68px; }
+  html, body { font-size: 15.5px; }
+  .game-grid { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 720px) {
+  .container, .app-header .header-inner, .bottom-nav .nav-inner { max-width: 680px; }
+  .game-grid { grid-template-columns: repeat(4, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .hero-balance .hb-value { font-size: 40px; }
+  .reels { gap: 10px; padding: 10px; }
+  .reel { height: 270px; }
+  .reel-cell { flex-basis: 90px; height: 90px; font-size: 50px; }
+  .reel-payline { height: 90px; }
+}
+
+@media (min-width: 1024px) {
+  .container, .app-header .header-inner, .bottom-nav .nav-inner { max-width: 880px; }
+  .game-grid { grid-template-columns: repeat(5, 1fr); }
+  .admin-wrap { max-width: 960px; }
+  .admin-grid-kpi { grid-template-columns: repeat(4, 1fr); }
+  .vip-levels { grid-template-columns: repeat(4, 1fr); }
+  body { padding-bottom: calc(var(--nav-h) + 20px); }
+}
+
+@media (min-width: 1280px) {
+  .container, .app-header .header-inner, .bottom-nav .nav-inner { max-width: 1040px; }
+  .game-grid { grid-template-columns: repeat(6, 1fr); }
+}
+
+@media (max-width: 360px) {
+  .reel { height: 210px; }
+  .reel-cell { flex-basis: 70px; height: 70px; font-size: 36px; }
+  .reel-payline { height: 70px; }
+  .hero-balance .hb-value { font-size: 28px; }
+  .game-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .brand-sub { display: none; }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  body { padding-top: 56px; padding-bottom: 56px; }
+  :root { --header-h: 56px; --nav-h: 56px; }
+  .reel { height: 180px; }
+  .reel-cell { flex-basis: 60px; height: 60px; font-size: 30px; }
+  .reel-payline { height: 60px; }
+}
+
+/* Admin grid chats-layout: stack on mobile */
+#chats-layout { grid-template-columns: 1fr !important; }
+@media (min-width: 820px) {
+  #chats-layout { grid-template-columns: 1fr 2fr !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001s !important;
+    transition-duration: .001s !important;
+  }
+}

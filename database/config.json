@@ -1,0 +1,19 @@
+{
+  "_doc": "Estrutura de referência — persistência real em LocalStorage ('6726bet.config').",
+  "platform_name": "6726.Bet",
+  "owner": "Anthony Ramos : bernardino",
+  "currency": "BRL",
+  "min_deposit": 10,
+  "min_withdraw": 20,
+  "max_withdraw": 50000,
+  "default_balance": 0,
+  "signup_bonus": 10,
+  "daily_bonus": 5,
+  "bonuses_enabled": true,
+  "events_enabled": true,
+  "vip_enabled": true,
+  "global_rtp": 0.92,
+  "admin_username": "admin",
+  "admin_password_default": "6726admin",
+  "pix_key": "6726@pix.6726bet.com"
+}

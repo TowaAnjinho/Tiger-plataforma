@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogar — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+  <div class="container section">
+    <div class="row space mb-12">
+      <a class="back-btn" href="jogos.html">←</a>
+      <div id="game-title-wrap" class="center" style="flex:1">
+        <div class="bold" id="game-title">Jogo</div>
+        <div class="small muted" id="game-sub"></div>
+      </div>
+      <div style="width:36px"></div>
+    </div>
+
+    <div class="slot-wrap anim-slide" id="slot-wrap">
+      <div class="slot-machine" id="slot-machine">
+        <div class="reels" id="reels">
+          <div class="reel" id="reel-0"><div class="reel-track" id="track-0"></div><div class="reel-payline"></div></div>
+          <div class="reel" id="reel-1"><div class="reel-track" id="track-1"></div><div class="reel-payline"></div></div>
+          <div class="reel" id="reel-2"><div class="reel-track" id="track-2"></div><div class="reel-payline"></div></div>
+        </div>
+      </div>
+
+      <div class="slot-hud">
+        <div class="hud-cell">
+          <div class="hc-label">Saldo</div>
+          <div class="hc-value" id="hud-balance">R$ 0,00</div>
+        </div>
+        <div class="hud-cell">
+          <div class="hc-label">Última vitória</div>
+          <div class="hc-value" id="hud-win">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div class="bet-controls">
+        <button class="bet-step" id="bet-dec">−</button>
+        <div class="bet-amount" id="bet-amount">R$ 1,00</div>
+        <button class="bet-step" id="bet-inc">+</button>
+      </div>
+
+      <button class="spin-btn" id="spin-btn">🎰 GIRAR</button>
+
+      <div class="win-banner hidden" id="win-banner"></div>
+
+      <div class="row space mt-12 small muted">
+        <div>RTP: <span id="meta-rtp">—</span></div>
+        <div>Min: <span id="meta-min">—</span> / Max: <span id="meta-max">—</span></div>
+      </div>
+    </div>
+
+    <div class="section-title mt-24">
+      <h3>Suas últimas jogadas</h3>
+    </div>
+    <div id="game-history"></div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/games.js"></script>
+  <script src="../games/tiger.js"></script>
+  <script src="../games/rabbit.js"></script>
+  <script src="../games/tigrinho.js"></script>
+  <script src="../games/pg.js"></script>
+  <script src="../games/spin.js"></script>
+  <script src="../games/dragon.js"></script>
+  <script src="../games/fortune.js"></script>
+  <script>
+    (function () {
+      var user = App.boot({ requireAuth: true, nav: "inicio", showBalance: true });
+      if (!user) return;
+      var params = new URLSearchParams(location.search);
+      var id = params.get("id");
+      var game = Games.getGame(id);
+      if (!game) { U.toast("Jogo não encontrado.", "error"); setTimeout(function(){ location.replace("jogos.html"); }, 900); return; }
+
+      // Tema
+      document.getElementById("slot-wrap").style.background = game.theme && game.theme.bg ? game.theme.bg : "";
+      document.getElementById("game-title").textContent = game.icon + " " + game.name;
+      document.getElementById("game-sub").textContent = game.brandName + " • " + (game.description || "");
+      document.getElementById("meta-rtp").textContent = Math.round(game.rtp * 100) + "%";
+      document.getElementById("meta-min").textContent = U.formatBRL(game.minBet);
+      document.getElementById("meta-max").textContent = U.formatBRL(game.maxBet);
+
+      var balEl = document.getElementById("hud-balance");
+      var winEl = document.getElementById("hud-win");
+      balEl.textContent = U.formatBRL(DB.getUser(user.username).balance);
+
+      var bet = game.minBet;
+      var betSteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000].filter(function (v) {
+        return v >= game.minBet && v <= game.maxBet;
+      });
+      if (!betSteps.length) betSteps = [game.minBet];
+      var stepIdx = 0;
+      function refreshBet() { bet = betSteps[stepIdx]; document.getElementById("bet-amount").textContent = U.formatBRL(bet); }
+      refreshBet();
+      document.getElementById("bet-dec").addEventListener("click", function () { if (stepIdx > 0) { stepIdx--; refreshBet(); U.sound.click(); } });
+      document.getElementById("bet-inc").addEventListener("click", function () { if (stepIdx < betSteps.length - 1) { stepIdx++; refreshBet(); U.sound.click(); } });
+
+      // Preenche reels
+      function buildTrack(trackEl) {
+        trackEl.innerHTML = "";
+        // 9 células iniciais para animação
+        for (var i = 0; i < 9; i++) {
+          var sym = game.symbols[i % game.symbols.length];
+          var c = document.createElement("div");
+          c.className = "reel-cell";
+          c.textContent = sym.e;
+          trackEl.appendChild(c);
+        }
+      }
+      buildTrack(document.getElementById("track-0"));
+      buildTrack(document.getElementById("track-1"));
+      buildTrack(document.getElementById("track-2"));
+
+      function setReelsResult(grid) {
+        // Linha central (3,4,5) exibida; topo (0,1,2); base (6,7,8)
+        for (var col = 0; col < 3; col++) {
+          var track = document.getElementById("track-" + col);
+          track.innerHTML = "";
+          var top = grid[col];
+          var mid = grid[col + 3];
+          var bot = grid[col + 6];
+          [top, mid, bot].forEach(function (s) {
+            var c = document.createElement("div");
+            c.className = "reel-cell";
+            c.textContent = s.e;
+            track.appendChild(c);
+          });
+          track.style.transform = "translateY(0)";
+        }
+      }
+
+      function highlightWin(grid, winSymbolId) {
+        if (!winSymbolId) return;
+        for (var col = 0; col < 3; col++) {
+          var track = document.getElementById("track-" + col);
+          var cells = track.querySelectorAll(".reel-cell");
+          if (cells[1] && grid[col + 3].id === winSymbolId) cells[1].classList.add("win");
+        }
+      }
+
+      var spinBtn = document.getElementById("spin-btn");
+      var banner = document.getElementById("win-banner");
+
+      function startSpinAnim() {
+        var r0 = document.getElementById("reel-0");
+        var r1 = document.getElementById("reel-1");
+        var r2 = document.getElementById("reel-2");
+        r0.classList.add("spinning-1");
+        r1.classList.add("spinning-2");
+        r2.classList.add("spinning-3");
+        U.sound.spin();
+      }
+      function stopSpinAnim() {
+        document.getElementById("reel-0").classList.remove("spinning-1");
+        document.getElementById("reel-1").classList.remove("spinning-2");
+        document.getElementById("reel-2").classList.remove("spinning-3");
+      }
+
+      function renderHistory() {
+        var hist = DB.getGameHistory(user.username, 20).filter(function (h) { return h.game_id === id; }).slice(0, 8);
+        var wrap = document.getElementById("game-history");
+        wrap.innerHTML = "";
+        if (!hist.length) { wrap.innerHTML = '<div class="muted small center">Ainda sem jogadas neste jogo.</div>'; return; }
+        var list = U.el("div", { cls: "tx-list" });
+        hist.forEach(function (h) {
+          var win = h.win > 0;
+          var el = U.el("div", { cls: "tx-item " + (win ? "win" : "bet") });
+          el.innerHTML =
+            '<div class="icon">' + (win ? "🏆" : "🎲") + '</div>' +
+            '<div class="body"><div class="t">' + U.formatBRL(h.bet) + ' → ' + U.formatBRL(h.win) + '</div><div class="s">' + U.fmtDateTime(h.ts) + '</div></div>' +
+            '<div class="amt">' + (win ? "+" : "") + U.formatBRL(h.profit) + '</div>';
+          list.appendChild(el);
+        });
+        wrap.appendChild(list);
+      }
+      renderHistory();
+
+      spinBtn.addEventListener("click", function () {
+        var cu = DB.getUser(user.username);
+        if (!cu) return;
+        if (cu.balance < bet) {
+          U.toast("Saldo insuficiente. Faça um depósito.", "warn");
+          return;
+        }
+        spinBtn.disabled = true;
+        banner.classList.add("hidden");
+        startSpinAnim();
+
+        setTimeout(function () {
+          var res = Games.spin(id, user.username, bet);
+          stopSpinAnim();
+          if (res.error) {
+            U.toast(res.error, "error");
+            spinBtn.disabled = false;
+            return;
+          }
+          setReelsResult(res.grid);
+          balEl.textContent = U.formatBRL(res.newBalance);
+          App.updateHeaderBalance();
+
+          if (res.win) {
+            winEl.textContent = U.formatBRL(res.winAmount);
+            banner.classList.remove("hidden", "loss");
+            banner.innerHTML = "🎉 Vitória! Você ganhou <strong>" + U.formatBRL(res.winAmount) + "</strong> (" + res.multiplier + "x)";
+            highlightWin(res.grid, res.winSymbol);
+            U.sound.win();
+            U.coinShower(Math.min(40, 12 + Math.round(res.multiplier * 4)));
+          } else {
+            winEl.textContent = "R$ 0,00";
+            banner.classList.remove("hidden");
+            banner.classList.add("loss");
+            banner.textContent = "Sem vitória desta vez. Tente novamente!";
+            U.sound.lose();
+          }
+          renderHistory();
+          spinBtn.disabled = false;
+        }, 1100);
+      });
+    })();
+  </script>
+</body>
+</html>

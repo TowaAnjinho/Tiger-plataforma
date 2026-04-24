@@ -1,0 +1,35 @@
+{
+  "_doc": "Estrutura de referência — A persistência real ocorre em LocalStorage (chave '6726bet.users'). Este arquivo documenta o formato.",
+  "_schema": {
+    "username": "string (lowercase, único)",
+    "nickname": "string (display)",
+    "email": "string (opcional)",
+    "phone": "string (opcional)",
+    "password_hash": "string (SHA-256 ou PLAIN:...)",
+    "balance": "number (BRL)",
+    "vip_points": "number",
+    "role": "user | admin",
+    "banned": "boolean",
+    "created_at": "timestamp",
+    "last_login": "timestamp",
+    "bonus_claimed_signup": "boolean",
+    "total_bet": "number",
+    "total_won": "number",
+    "total_deposited": "number",
+    "total_withdrawn": "number"
+  },
+  "_example": {
+    "anthony": {
+      "username": "anthony",
+      "nickname": "Anthony",
+      "email": "anthony@example.com",
+      "password_hash": "SHA:...",
+      "balance": 100.0,
+      "vip_points": 250,
+      "role": "user",
+      "banned": false,
+      "created_at": 0,
+      "last_login": 0
+    }
+  }
+}

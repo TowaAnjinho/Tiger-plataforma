@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurações — 6726.Bet</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+  <div class="container section">
+    <div class="row mb-12">
+      <a class="back-btn" href="perfil.html">←</a>
+      <h2 style="margin:0">Configurações</h2>
+    </div>
+
+    <div class="card mb-12">
+      <div class="card-title">Perfil</div>
+      <div class="field">
+        <label>Apelido</label>
+        <input type="text" id="nickname" maxlength="24" />
+      </div>
+      <div class="field mt-8">
+        <label>E-mail</label>
+        <input type="email" id="email" />
+      </div>
+      <div class="field mt-8">
+        <label>Telefone</label>
+        <input type="tel" id="phone" placeholder="(00) 90000-0000" />
+      </div>
+      <button class="btn primary mt-12" id="save-profile">Salvar perfil</button>
+    </div>
+
+    <div class="card mb-12">
+      <div class="card-title">Segurança</div>
+      <div class="field">
+        <label>Nova senha</label>
+        <input type="password" id="new-pwd" />
+      </div>
+      <div class="field mt-8">
+        <label>Confirmar</label>
+        <input type="password" id="new-pwd-2" />
+      </div>
+      <button class="btn secondary mt-12" id="save-pwd">Alterar senha</button>
+    </div>
+
+    <div class="card mb-12">
+      <div class="card-title">Preferências</div>
+      <div class="row space">
+        <div class="bold">Sons</div>
+        <button class="btn small secondary" id="sound-toggle">Ligado</button>
+      </div>
+      <div class="row space mt-8">
+        <div class="bold">Notificações</div>
+        <span class="badge cyan" id="notif-count">0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Notificações recentes</div>
+      <div id="notif-list"></div>
+    </div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/database.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (function () {
+      var user = App.boot({ requireAuth: true, nav: "perfil", showBalance: true });
+      if (!user) return;
+      document.getElementById("nickname").value = user.nickname || "";
+      document.getElementById("email").value = user.email || "";
+      document.getElementById("phone").value = user.phone || "";
+
+      document.getElementById("save-profile").addEventListener("click", function () {
+        var u = DB.getUser(user.username);
+        u.nickname = document.getElementById("nickname").value.trim() || u.nickname;
+        u.email = document.getElementById("email").value.trim();
+        u.phone = document.getElementById("phone").value.trim();
+        DB.saveUser(u);
+        U.toast("Perfil atualizado.", "success");
+      });
+
+      document.getElementById("save-pwd").addEventListener("click", async function () {
+        var a = document.getElementById("new-pwd").value;
+        var b = document.getElementById("new-pwd-2").value;
+        if (a !== b) { U.toast("Senhas não conferem.", "error"); return; }
+        var r = await Auth.changePassword(user.username, a);
+        if (!r.ok) U.toast(r.error, "error");
+        else { U.toast("Senha alterada.", "success"); document.getElementById("new-pwd").value=""; document.getElementById("new-pwd-2").value=""; }
+      });
+
+      // Sound
+      var soundOn = localStorage.getItem("6726bet.sound") !== "off";
+      U.sound.setEnabled(soundOn);
+      var sbtn = document.getElementById("sound-toggle");
+      sbtn.textContent = soundOn ? "Ligado" : "Desligado";
+      sbtn.className = "btn small " + (soundOn ? "primary" : "secondary");
+      sbtn.addEventListener("click", function () {
+        soundOn = !soundOn;
+        U.sound.setEnabled(soundOn);
+        localStorage.setItem("6726bet.sound", soundOn ? "on" : "off");
+        sbtn.textContent = soundOn ? "Ligado" : "Desligado";
+        sbtn.className = "btn small " + (soundOn ? "primary" : "secondary");
+        if (soundOn) U.sound.click();
+      });
+
+      // Notifications
+      var notifs = DB.getNotifications(user.username);
+      document.getElementById("notif-count").textContent = notifs.filter(function (n) { return !n.read; }).length;
+      var nl = document.getElementById("notif-list");
+      if (!notifs.length) {
+        nl.innerHTML = '<div class="muted small center">Sem notificações.</div>';
+      } else {
+        notifs.slice(0, 30).forEach(function (n) {
+          var el = U.el("div", { cls: "tx-item" });
+          el.innerHTML =
+            '<div class="icon">' + (n.kind === "success" ? "✨" : n.kind === "warn" ? "⚠️" : "🔔") + '</div>' +
+            '<div class="body"><div class="t">' + U.escapeHtml(n.title) + '</div><div class="s">' + U.escapeHtml(n.body || "") + ' • ' + U.fmtDateTime(n.ts) + '</div></div>';
+          nl.appendChild(el);
+        });
+        DB.markNotifsRead(user.username);
+      }
+    })();
+  </script>
+</body>
+</html>
