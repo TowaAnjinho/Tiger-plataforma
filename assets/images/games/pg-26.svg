@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true"><defs>
+  <linearGradient id="bg-gt-pg-25" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#0b1e3b"/>
+    <stop offset="100%" stop-color="#0a0a12"/>
+  </linearGradient>
+  <radialGradient id="glow-gt-pg-25" cx="50%" cy="50%" r="60%">
+    <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.55"/>
+    <stop offset="60%" stop-color="#6366f1" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="gold-gt-pg-25" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#e0f7ff"/>
+    <stop offset="50%" stop-color="#22d3ee"/>
+    <stop offset="100%" stop-color="#6366f1"/>
+  </linearGradient>
+  <filter id="blur-gt-pg-25" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="8"/>
+  </filter>
+  <filter id="shadow-gt-pg-25" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.45"/>
+  </filter>
+  <filter id="neon-gt-pg-25" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="4" result="b"/>
+    <feMerge>
+      <feMergeNode in="b"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs><rect width="400" height="400" fill="url(#bg-gt-pg-25)"/><circle cx="200.0" cy="200.0" r="240.0" fill="url(#glow-gt-pg-25)"/><circle cx="303.4" cy="220.7" r="0.64" fill="#ffffff" opacity="0.68"/><circle cx="398.9" cy="214.9" r="0.88" fill="#ffffff" opacity="0.22"/><circle cx="281.8" cy="83.3" r="1.57" fill="#ffffff" opacity="0.24"/><circle cx="179.4" cy="207.8" r="1.56" fill="#ffffff" opacity="0.27"/><circle cx="73.7" cy="232.3" r="1.60" fill="#ffffff" opacity="0.32"/><circle cx="291.3" cy="298.7" r="1.38" fill="#ffffff" opacity="0.47"/><circle cx="27.5" cy="113.7" r="1.60" fill="#ffffff" opacity="0.26"/><circle cx="64.0" cy="59.4" r="1.63" fill="#ffffff" opacity="0.30"/><circle cx="361.9" cy="165.1" r="1.00" fill="#ffffff" opacity="0.67"/><circle cx="203.2" cy="350.8" r="1.46" fill="#ffffff" opacity="0.40"/><circle cx="157.4" cy="356.4" r="0.54" fill="#ffffff" opacity="0.65"/><circle cx="392.1" cy="46.9" r="1.25" fill="#ffffff" opacity="0.44"/><circle cx="30.5" cy="18.0" r="0.70" fill="#ffffff" opacity="0.33"/><circle cx="259.0" cy="133.7" r="0.65" fill="#ffffff" opacity="0.57"/><circle cx="43.1" cy="325.2" r="1.25" fill="#ffffff" opacity="0.49"/><circle cx="315.1" cy="234.6" r="0.66" fill="#ffffff" opacity="0.38"/><circle cx="33.8" cy="189.7" r="1.46" fill="#ffffff" opacity="0.30"/><circle cx="152.7" cy="18.7" r="1.02" fill="#ffffff" opacity="0.82"/><circle cx="235.3" cy="105.3" r="0.91" fill="#ffffff" opacity="0.85"/><circle cx="239.1" cy="89.5" r="1.12" fill="#ffffff" opacity="0.52"/><circle cx="220.3" cy="206.3" r="0.81" fill="#ffffff" opacity="0.58"/><circle cx="180.7" cy="364.6" r="0.60" fill="#ffffff" opacity="0.51"/><circle cx="114.5" cy="294.5" r="1.67" fill="#ffffff" opacity="0.56"/><circle cx="330.1" cy="303.6" r="1.66" fill="#ffffff" opacity="0.67"/><circle cx="392.1" cy="142.5" r="0.91" fill="#ffffff" opacity="0.47"/><circle cx="10.4" cy="236.3" r="0.67" fill="#ffffff" opacity="0.72"/><circle cx="193.7" cy="99.5" r="1.29" fill="#ffffff" opacity="0.62"/><circle cx="62.4" cy="92.4" r="1.48" fill="#ffffff" opacity="0.54"/><circle cx="155.8" cy="329.9" r="1.52" fill="#ffffff" opacity="0.24"/><circle cx="248.1" cy="156.6" r="1.76" fill="#ffffff" opacity="0.38"/><line x1="257.8" y1="180.0" x2="365.0" y2="180.0" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="252.0" y1="205.1" x2="348.7" y2="251.6" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="236.0" y1="225.2" x2="302.9" y2="309.0" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="212.9" y1="236.3" x2="236.7" y2="340.9" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="187.1" y1="236.3" x2="163.3" y2="340.9" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="164.0" y1="225.2" x2="97.1" y2="309.0" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="148.0" y1="205.1" x2="51.3" y2="251.6" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="142.2" y1="180.0" x2="35.0" y2="180.0" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="148.0" y1="154.9" x2="51.3" y2="108.4" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="164.0" y1="134.8" x2="97.1" y2="51.0" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="187.1" y1="123.7" x2="163.3" y2="19.1" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="212.9" y1="123.7" x2="236.7" y2="19.1" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="236.0" y1="134.8" x2="302.9" y2="51.0" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="252.0" y1="154.9" x2="348.7" y2="108.4" stroke="#e0f7ff" stroke-width="2" opacity="0.55" stroke-linecap="round"/><g>
+      <path d="M 200.0 58.999999999999986 L 284.7 155.8 L 248.4 301.0 L 151.6 301.0 L 115.3 155.8 Z" fill="#22d3ee" stroke="#ffffff" stroke-width="1.5" opacity="0.95"/>
+      <path d="M 139.5 161.85 L 260.5 161.85" stroke="#e0f7ff" stroke-width="1.5" opacity="0.8"/>
+      <path d="M 200.0 58.999999999999986 L 200.0 301.0" stroke="#e0f7ff" stroke-width="1" opacity="0.5"/>
+      <path d="M 169.75 107.39999999999999 L 187.9 131.6" stroke="#ffffff" stroke-width="2" opacity="0.9"/>
+    </g><g transform="translate(70 70)">
+      <circle r="26" fill="#ffd65a" stroke="#7a5100" stroke-width="2.1"/>
+      <circle r="20.3" fill="none" stroke="#b57e05" stroke-width="1.6" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="9.9" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="31.2" fill="#b57e05">$</text>
+      <ellipse cx="-9.1" cy="-9.1" rx="9.1" ry="4.7" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(330 70)">
+      <circle r="22" fill="#ffd65a" stroke="#7a5100" stroke-width="1.8"/>
+      <circle r="17.2" fill="none" stroke="#b57e05" stroke-width="1.3" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="8.4" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="26.4" fill="#b57e05">$</text>
+      <ellipse cx="-7.7" cy="-7.7" rx="7.7" ry="4.0" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(80 320)">
+      <circle r="18" fill="#ffd65a" stroke="#7a5100" stroke-width="1.4"/>
+      <circle r="14.0" fill="none" stroke="#b57e05" stroke-width="1.1" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="6.8" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="21.6" fill="#b57e05">$</text>
+      <ellipse cx="-6.3" cy="-6.3" rx="6.3" ry="3.2" fill="#ffffff" opacity="0.55"/>
+    </g><g>
+      <path d="M 340 308 L 355.4 325.6 L 348.8 352 L 331.2 352 L 324.6 325.6 Z" fill="#22d3ee" stroke="#ffffff" stroke-width="1.5" opacity="0.95"/>
+      <path d="M 329.0 326.7 L 351.0 326.7" stroke="#e0f7ff" stroke-width="1.5" opacity="0.8"/>
+      <path d="M 340 308 L 340 352" stroke="#e0f7ff" stroke-width="1" opacity="0.5"/>
+      <path d="M 334.5 316.8 L 337.8 321.2" stroke="#ffffff" stroke-width="2" opacity="0.9"/>
+    </g><g transform="translate(0 310)">
+          <rect x="0" y="0" width="400" height="90" fill="rgba(0,0,0,0.55)"/>
+          <rect x="0" y="0" width="400" height="3" fill="url(#gold-gt-pg-25)"/>
+          <text x="200.0" y="38" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="24" fill="url(#gold-gt-pg-25)" filter="url(#shadow-gt-pg-25)">PG VOYAGER</text>
+          <text x="200.0" y="64" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#ffffff" opacity="0.85">PG • 6726.BET</text>
+        </g></svg>

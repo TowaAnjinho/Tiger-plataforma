@@ -11,29 +11,27 @@
 <body>
   <div class="container section">
 
-    <div class="card">
-      <div class="row" style="gap:14px">
-        <div class="avatar" id="avatar">A</div>
+    <div class="wallet-card">
+      <div class="row" style="gap:14px; position:relative; z-index:1">
+        <img class="avatar-img lg" id="avatar-img" alt="avatar"/>
         <div style="flex:1; min-width:0">
-          <div class="bold" style="font-size:17px" id="nick"></div>
+          <div class="bold" style="font-size:18px" id="nick"></div>
           <div class="small muted" id="uname"></div>
           <div class="small muted" id="since"></div>
         </div>
-        <a class="btn small secondary" href="config.html">⚙️ Config.</a>
+        <a class="btn small secondary icon-btn" href="config.html"><img src="../assets/images/icons/settings.svg" alt=""/> Config.</a>
       </div>
-    </div>
-
-    <div class="card mt-12">
-      <div class="row space">
+      <div class="divider" style="position:relative;z-index:1"></div>
+      <div class="row space" style="position:relative; z-index:1">
         <div>
-          <div class="small muted">Saldo disponível</div>
-          <div class="bold" style="font-size:24px; color:var(--gold)" id="balance">R$ 0,00</div>
+          <div class="wc-label">Saldo disponível</div>
+          <div class="wc-value" id="balance">R$ 0,00</div>
         </div>
-        <span class="badge magenta" id="vip-badge">VIP 0</span>
+        <span class="wc-vip"><img id="vip-img" alt="VIP"/><span id="vip-badge">VIP 0</span></span>
       </div>
-      <div class="grid grid-2 mt-12">
-        <a class="btn primary" href="deposito.html">💰 Depositar</a>
-        <a class="btn secondary" href="saque.html">💸 Sacar</a>
+      <div class="wc-actions">
+        <a class="btn primary icon-btn" href="deposito.html"><img src="../assets/images/icons/wallet.svg" alt=""/> Depositar</a>
+        <a class="btn secondary icon-btn" href="saque.html"><img src="../assets/images/icons/arrow-up-right.svg" alt=""/> Sacar</a>
       </div>
     </div>
 
@@ -56,12 +54,13 @@
     </div>
 
     <div class="card mt-12">
-      <button class="btn secondary full" id="logout-btn">🚪 Sair da conta</button>
+      <button class="btn secondary full icon-btn" id="logout-btn"><img src="../assets/images/icons/logout.svg" alt=""/> Sair da conta</button>
     </div>
   </div>
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/chat.js"></script>
@@ -69,13 +68,14 @@
     (function () {
       var user = App.boot({ requireAuth: true, nav: "perfil", showBalance: true });
       if (!user) return;
-      document.getElementById("avatar").textContent = U.avatarFor(user.nickname || user.username);
+      document.getElementById("avatar-img").src = Assets.avatar(user.username);
       document.getElementById("nick").textContent = user.nickname || user.username;
       document.getElementById("uname").textContent = "@" + user.username;
       document.getElementById("since").textContent = "Membro desde " + U.fmtDateTime(user.created_at);
       document.getElementById("balance").textContent = U.formatBRL(user.balance);
       var vipLevel = Math.min(10, Math.floor((user.vip_points || 0) / 500));
       document.getElementById("vip-badge").textContent = "VIP " + vipLevel;
+      document.getElementById("vip-img").src = Assets.vip(vipLevel);
       document.getElementById("stat-bet").textContent = U.formatBRL(user.total_bet || 0);
       document.getElementById("stat-won").textContent = U.formatBRL(user.total_won || 0);
 
@@ -88,11 +88,11 @@
       } else {
         var wrap = U.el("div", { cls: "tx-list" });
         txs.forEach(function (t) {
-          var ico = { deposit: "💰", withdraw: "💸", bet: "🎲", win: "🏆", bonus: "🎁" }[t.type] || "•";
+          var ico = { deposit: "wallet", withdraw: "arrow-up-right", bet: "slot", win: "trophy", bonus: "gift" }[t.type] || "star";
           var sign = (t.type === "withdraw" || t.type === "bet") ? "−" : "+";
           var el = U.el("div", { cls: "tx-item " + t.type });
           el.innerHTML =
-            '<div class="icon">' + ico + '</div>' +
+            '<div class="icon"><img class="icon-img" src="../assets/images/icons/' + ico + '.svg" alt=""/></div>' +
             '<div class="body"><div class="t">' + U.escapeHtml(t.label || t.type) + '</div><div class="s">' + U.fmtDateTime(t.created_at) + '</div></div>' +
             '<div class="amt">' + sign + U.formatBRL(t.amount) + '</div>';
           wrap.appendChild(el);

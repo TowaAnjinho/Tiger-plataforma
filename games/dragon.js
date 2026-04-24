@@ -22,7 +22,7 @@
       id: "dragon-" + String(i + 1).padStart(2, "0"),
       name: "Dragon " + themes[i],
       description: "Dragon — " + themes[i],
-      minBet: 1, maxBet: 800,
+      minBet: 0.10, maxBet: 800,
       rtp: 0.90 + (i % 5) * 0.008,
       symbols: symbols,
       theme: { bg: "linear-gradient(135deg, #3a0a0a, #0a0a12)", accent: "#ef4444" },

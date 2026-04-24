@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true"><defs>
+  <linearGradient id="bg-gt-tigrinho-15" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#3b2a05"/>
+    <stop offset="100%" stop-color="#0a0a12"/>
+  </linearGradient>
+  <radialGradient id="glow-gt-tigrinho-15" cx="50%" cy="50%" r="60%">
+    <stop offset="0%" stop-color="#ffd65a" stop-opacity="0.55"/>
+    <stop offset="60%" stop-color="#ff8a1f" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="gold-gt-tigrinho-15" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffffe0"/>
+    <stop offset="50%" stop-color="#ffd65a"/>
+    <stop offset="100%" stop-color="#ff8a1f"/>
+  </linearGradient>
+  <filter id="blur-gt-tigrinho-15" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="8"/>
+  </filter>
+  <filter id="shadow-gt-tigrinho-15" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.45"/>
+  </filter>
+  <filter id="neon-gt-tigrinho-15" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="4" result="b"/>
+    <feMerge>
+      <feMergeNode in="b"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs><rect width="400" height="400" fill="url(#bg-gt-tigrinho-15)"/><circle cx="200.0" cy="200.0" r="240.0" fill="url(#glow-gt-tigrinho-15)"/><circle cx="143.9" cy="99.3" r="1.78" fill="#ffffff" opacity="0.47"/><circle cx="256.9" cy="212.0" r="1.75" fill="#ffffff" opacity="0.77"/><circle cx="239.7" cy="325.5" r="0.99" fill="#ffffff" opacity="0.38"/><circle cx="241.4" cy="281.0" r="1.25" fill="#ffffff" opacity="0.82"/><circle cx="162.6" cy="179.0" r="0.64" fill="#ffffff" opacity="0.24"/><circle cx="370.0" cy="101.1" r="1.18" fill="#ffffff" opacity="0.46"/><circle cx="54.6" cy="23.6" r="0.96" fill="#ffffff" opacity="0.84"/><circle cx="200.6" cy="150.0" r="1.24" fill="#ffffff" opacity="0.51"/><circle cx="345.7" cy="0.5" r="1.36" fill="#ffffff" opacity="0.25"/><circle cx="81.7" cy="190.5" r="1.18" fill="#ffffff" opacity="0.62"/><circle cx="21.1" cy="325.7" r="1.10" fill="#ffffff" opacity="0.68"/><circle cx="41.5" cy="380.5" r="1.46" fill="#ffffff" opacity="0.43"/><circle cx="45.1" cy="137.3" r="1.57" fill="#ffffff" opacity="0.62"/><circle cx="2.5" cy="250.2" r="0.68" fill="#ffffff" opacity="0.49"/><circle cx="385.0" cy="315.3" r="1.05" fill="#ffffff" opacity="0.84"/><circle cx="342.4" cy="187.0" r="0.74" fill="#ffffff" opacity="0.61"/><circle cx="137.0" cy="54.0" r="1.78" fill="#ffffff" opacity="0.81"/><circle cx="194.1" cy="105.6" r="1.21" fill="#ffffff" opacity="0.39"/><circle cx="170.8" cy="82.7" r="1.80" fill="#ffffff" opacity="0.73"/><circle cx="259.9" cy="386.5" r="1.22" fill="#ffffff" opacity="0.24"/><circle cx="37.8" cy="76.6" r="0.54" fill="#ffffff" opacity="0.26"/><circle cx="201.9" cy="204.2" r="0.56" fill="#ffffff" opacity="0.45"/><circle cx="323.8" cy="181.7" r="1.79" fill="#ffffff" opacity="0.60"/><circle cx="364.4" cy="134.3" r="1.41" fill="#ffffff" opacity="0.52"/><circle cx="67.7" cy="35.9" r="0.55" fill="#ffffff" opacity="0.56"/><circle cx="206.0" cy="159.0" r="1.30" fill="#ffffff" opacity="0.46"/><circle cx="311.1" cy="207.4" r="0.70" fill="#ffffff" opacity="0.25"/><circle cx="398.1" cy="53.6" r="1.36" fill="#ffffff" opacity="0.50"/><circle cx="318.6" cy="87.8" r="1.46" fill="#ffffff" opacity="0.32"/><circle cx="101.5" cy="78.6" r="1.05" fill="#ffffff" opacity="0.52"/><line x1="254.2" y1="180.0" x2="355.0" y2="180.0" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="248.9" y1="203.5" x2="339.7" y2="247.3" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="233.8" y1="222.4" x2="296.6" y2="301.2" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="212.1" y1="232.9" x2="234.5" y2="331.1" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="187.9" y1="232.9" x2="165.5" y2="331.1" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="166.2" y1="222.4" x2="103.4" y2="301.2" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="151.1" y1="203.5" x2="60.3" y2="247.3" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="145.8" y1="180.0" x2="45.0" y2="180.0" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="151.1" y1="156.5" x2="60.3" y2="112.7" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="166.2" y1="137.6" x2="103.4" y2="58.8" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="187.9" y1="127.1" x2="165.5" y2="28.9" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="212.1" y1="127.1" x2="234.5" y2="28.9" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="233.8" y1="137.6" x2="296.6" y2="58.8" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="248.9" y1="156.5" x2="339.7" y2="112.7" stroke="#ffffe0" stroke-width="2" opacity="0.55" stroke-linecap="round"/><g transform="translate(200.0 180.0)">
+      <!-- ears -->
+      <path d="M -99.0 -121.00000000000001 L -44.0 -165.0 L -33.0 -88.0 Z" fill="#ffd65a"/>
+      <path d="M 99.0 -121.00000000000001 L 44.0 -165.0 L 33.0 -88.0 Z" fill="#ffd65a"/>
+      <!-- head -->
+      <ellipse rx="121.00000000000001" ry="105.6" fill="#ffd65a"/>
+      <!-- stripes -->
+      <path d="M -88.0 -44.0 Q -66.0 -77.0 -33.0 -55.0" stroke="#2a1300" stroke-width="13.2" fill="none" stroke-linecap="round"/>
+      <path d="M 88.0 -44.0 Q 66.0 -77.0 33.0 -55.0" stroke="#2a1300" stroke-width="13.2" fill="none" stroke-linecap="round"/>
+      <path d="M -99.0 11.0 L -55.0 22.0" stroke="#2a1300" stroke-width="11.0" stroke-linecap="round"/>
+      <path d="M 99.0 11.0 L 55.0 22.0" stroke="#2a1300" stroke-width="11.0" stroke-linecap="round"/>
+      <!-- face -->
+      <ellipse cx="0" cy="11.0" rx="66.0" ry="61.60000000000001" fill="#ffe0b8" opacity="0.95"/>
+      <!-- eyes -->
+      <circle cx="-39.6" cy="-22.0" r="17.6" fill="#fff"/>
+      <circle cx="39.6" cy="-22.0" r="17.6" fill="#fff"/>
+      <circle cx="-39.6" cy="-22.0" r="9.9" fill="#2a1300"/>
+      <circle cx="39.6" cy="-22.0" r="9.9" fill="#2a1300"/>
+      <!-- nose -->
+      <path d="M -11.0 15.400000000000002 L 11.0 15.400000000000002 L 0 33.0 Z" fill="#2a1300"/>
+      <!-- mouth -->
+      <path d="M 0 33.0 Q -17.6 55.0 -26.4 44.0" stroke="#2a1300" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+      <path d="M 0 33.0 Q 17.6 55.0 26.4 44.0" stroke="#2a1300" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    </g><g transform="translate(70 70)">
+      <circle r="26" fill="#ffd65a" stroke="#7a5100" stroke-width="2.1"/>
+      <circle r="20.3" fill="none" stroke="#b57e05" stroke-width="1.6" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="9.9" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="31.2" fill="#b57e05">$</text>
+      <ellipse cx="-9.1" cy="-9.1" rx="9.1" ry="4.7" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(330 70)">
+      <circle r="22" fill="#ffd65a" stroke="#7a5100" stroke-width="1.8"/>
+      <circle r="17.2" fill="none" stroke="#b57e05" stroke-width="1.3" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="8.4" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="26.4" fill="#b57e05">$</text>
+      <ellipse cx="-7.7" cy="-7.7" rx="7.7" ry="4.0" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(80 320)">
+      <circle r="18" fill="#ffd65a" stroke="#7a5100" stroke-width="1.4"/>
+      <circle r="14.0" fill="none" stroke="#b57e05" stroke-width="1.1" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="6.8" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="21.6" fill="#b57e05">$</text>
+      <ellipse cx="-6.3" cy="-6.3" rx="6.3" ry="3.2" fill="#ffffff" opacity="0.55"/>
+    </g><g>
+      <path d="M 340 308 L 355.4 325.6 L 348.8 352 L 331.2 352 L 324.6 325.6 Z" fill="#ffd65a" stroke="#ffffff" stroke-width="1.5" opacity="0.95"/>
+      <path d="M 329.0 326.7 L 351.0 326.7" stroke="#e0f7ff" stroke-width="1.5" opacity="0.8"/>
+      <path d="M 340 308 L 340 352" stroke="#e0f7ff" stroke-width="1" opacity="0.5"/>
+      <path d="M 334.5 316.8 L 337.8 321.2" stroke="#ffffff" stroke-width="2" opacity="0.9"/>
+    </g><g transform="translate(0 310)">
+          <rect x="0" y="0" width="400" height="90" fill="rgba(0,0,0,0.55)"/>
+          <rect x="0" y="0" width="400" height="3" fill="url(#gold-gt-tigrinho-15)"/>
+          <text x="200.0" y="38" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="24" fill="url(#gold-gt-tigrinho-15)" filter="url(#shadow-gt-tigrinho-15)">TIGRINHO LIGHTNING</text>
+          <text x="200.0" y="64" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#ffffff" opacity="0.85">TIGRINHO • 6726.BET</text>
+        </g></svg>

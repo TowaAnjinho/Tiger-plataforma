@@ -31,7 +31,7 @@
       id: "tiger-" + String(i + 1).padStart(2, "0"),
       name: "Tiger " + themes[i],
       description: "Slot do Tigre — " + themes[i],
-      minBet: 1,
+      minBet: 0.10,
       maxBet: 500,
       rtp: 0.90 + (i % 6) * 0.01,
       symbols: symbols,

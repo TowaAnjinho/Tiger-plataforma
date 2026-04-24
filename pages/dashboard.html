@@ -11,16 +11,30 @@
 <body>
   <div class="container section">
 
-    <div class="hero-balance anim-slide" id="hero-balance">
-      <div class="hb-label">Saldo disponível</div>
-      <div class="hb-value" id="hb-value">R$ 0,00</div>
-      <div class="row small muted">
-        <span id="hb-vip-badge" class="badge magenta">VIP 0</span>
-        <span id="hb-user" class="muted"></span>
+    <!-- Hero carousel (real SVG banners) -->
+    <div class="hero-carousel anim-fade" id="hero-carousel" aria-roledescription="carousel">
+      <div class="hc-track" id="hc-track"></div>
+      <button class="hc-nav hc-prev" aria-label="Anterior" id="hc-prev">‹</button>
+      <button class="hc-nav hc-next" aria-label="Próximo" id="hc-next">›</button>
+      <div class="hc-dots" id="hc-dots"></div>
+    </div>
+
+    <!-- Wallet glance -->
+    <div class="wallet-card anim-slide" id="hero-balance" style="margin-bottom:18px">
+      <div class="row space">
+        <div>
+          <div class="wc-label">Saldo disponível</div>
+          <div class="wc-value" id="hb-value">R$ 0,00</div>
+          <div class="row small" style="margin-top:6px; gap:10px">
+            <span class="wc-vip"><img id="hb-vip-img" alt="VIP"/><span id="hb-vip-label">VIP 0</span></span>
+            <span class="muted" id="hb-user"></span>
+          </div>
+        </div>
+        <img class="avatar-img lg" id="hb-avatar" alt="avatar"/>
       </div>
-      <div class="hb-actions">
-        <a href="deposito.html" class="btn primary">💰 Depositar</a>
-        <a href="saque.html" class="btn secondary">💸 Sacar</a>
+      <div class="wc-actions">
+        <a href="deposito.html" class="btn primary icon-btn" id="btn-deposit"></a>
+        <a href="saque.html" class="btn secondary icon-btn" id="btn-withdraw"></a>
       </div>
     </div>
 
@@ -29,22 +43,22 @@
       <a href="vip.html#bonus">Ver mais</a>
     </div>
     <div class="grid grid-2">
-      <button class="card glow" id="btn-daily" style="text-align:left">
+      <button class="card glass glow-magenta" id="btn-daily" style="text-align:left; cursor:pointer">
         <div class="row space">
           <div>
             <div class="bold">Bônus diário</div>
             <div class="small muted" id="daily-status">Resgate diariamente</div>
           </div>
-          <div style="font-size:28px">🎁</div>
+          <img class="icon-img xl" src="../assets/images/icons/gift.svg" alt="bônus"/>
         </div>
       </button>
-      <a class="card" href="vip.html" style="text-align:left">
+      <a class="card glass glow-gold" href="vip.html" style="text-align:left">
         <div class="row space">
           <div>
             <div class="bold">Torne-se VIP</div>
             <div class="small muted">Aposte e suba de nível</div>
           </div>
-          <div style="font-size:28px">👑</div>
+          <img class="icon-img xl" src="../assets/images/icons/crown.svg" alt="VIP"/>
         </div>
       </a>
     </div>
@@ -56,13 +70,25 @@
     <div class="grid grid-3" id="brands-grid"></div>
 
     <div class="section-title mt-24">
-      <h3>Jogos em destaque</h3>
+      <h3>Populares</h3>
       <a href="jogos.html">Todos</a>
     </div>
-    <div class="game-grid" id="featured-grid"></div>
+    <div class="game-grid" id="popular-grid"></div>
 
     <div class="section-title mt-24">
-      <h3>🏆 Top ganhadores</h3>
+      <h3>Novos</h3>
+      <a href="jogos.html">Ver mais</a>
+    </div>
+    <div class="game-grid" id="new-grid"></div>
+
+    <div class="section-title mt-24">
+      <h3>Recomendados</h3>
+      <a href="jogos.html">Ver mais</a>
+    </div>
+    <div class="game-grid" id="recommended-grid"></div>
+
+    <div class="section-title mt-24">
+      <h3>Top ganhadores</h3>
     </div>
     <div id="leaderboard"></div>
 
@@ -78,6 +104,7 @@
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/games.js"></script>
@@ -94,11 +121,42 @@
       if (!user) return;
       if (Auth.isAdmin()) { location.replace("admin.html"); return; }
 
-      // Hero
+      // Hero carousel
+      var heroes = Assets.allHeroes();
+      var track = document.getElementById("hc-track");
+      var dots = document.getElementById("hc-dots");
+      heroes.forEach(function (src, i) {
+        var slide = U.el("div", { cls: "hc-slide" });
+        slide.innerHTML = '<a href="jogos.html"><img src="' + src + '" alt="banner ' + (i+1) + '" loading="lazy"/></a>';
+        track.appendChild(slide);
+        var dot = U.el("button", { cls: "hc-dot" + (i === 0 ? " active" : ""), attrs: { "aria-label": "Slide " + (i+1), "data-i": i } });
+        dots.appendChild(dot);
+      });
+      var curIdx = 0;
+      function go(i) {
+        curIdx = (i + heroes.length) % heroes.length;
+        track.style.transform = "translateX(-" + (curIdx * 100) + "%)";
+        [].forEach.call(dots.children, function (d, idx) { d.classList.toggle("active", idx === curIdx); });
+      }
+      document.getElementById("hc-prev").addEventListener("click", function(){ go(curIdx - 1); });
+      document.getElementById("hc-next").addEventListener("click", function(){ go(curIdx + 1); });
+      [].forEach.call(dots.children, function (d) {
+        d.addEventListener("click", function () { go(+d.getAttribute("data-i")); });
+      });
+      var autoT = setInterval(function(){ go(curIdx + 1); }, 5500);
+      document.getElementById("hero-carousel").addEventListener("mouseenter", function(){ clearInterval(autoT); });
+
+      // Wallet
       document.getElementById("hb-value").textContent = U.formatBRL(user.balance);
       var vipLevel = Math.min(10, Math.floor((user.vip_points || 0) / 500));
-      document.getElementById("hb-vip-badge").textContent = "VIP " + vipLevel;
+      document.getElementById("hb-vip-label").textContent = "VIP " + vipLevel;
+      document.getElementById("hb-vip-img").src = Assets.vip(vipLevel);
       document.getElementById("hb-user").textContent = "Olá, " + U.escapeHtml(user.nickname || user.username);
+      document.getElementById("hb-avatar").src = Assets.avatar(user.username);
+      document.getElementById("btn-deposit").innerHTML =
+        '<img src="../assets/images/icons/wallet.svg" alt=""/> Depositar';
+      document.getElementById("btn-withdraw").innerHTML =
+        '<img src="../assets/images/icons/arrow-up-right.svg" alt=""/> Sacar';
 
       // Bônus diário
       var claims = DB.getBonusClaims()[user.username] || {};
@@ -124,33 +182,47 @@
       brands.forEach(function (b) {
         var el = U.el("a", {
           cls: "brand-card",
-          attrs: { href: "jogos2.html?brand=" + encodeURIComponent(b.key) },
-          style: { background: "linear-gradient(135deg," + b.color + "55, #0a0a12)" }
+          attrs: { href: "jogos2.html?brand=" + encodeURIComponent(b.key) }
         });
         el.innerHTML =
-          '<div class="brand-bg">' + b.icon + '</div>' +
+          '<div class="brand-img" style="background-image:url(' + Assets.brandBanner(b.key) + ')"></div>' +
           '<div class="brand-label">' + U.escapeHtml(b.name) + ' <small>' + b.games.length + ' jogos</small></div>';
         bg.appendChild(el);
       });
 
-      // Featured — 8 random games
+      // Sections: Populares, Novos, Recomendados — each uses different deterministic slices
       var all = Games.allGames().slice();
-      for (var i = all.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var t = all[i]; all[i] = all[j]; all[j] = t;
+      function shuffle(arr, seed) {
+        var a = arr.slice();
+        var r = seed;
+        for (var i = a.length - 1; i > 0; i--) {
+          r = (r * 9301 + 49297) % 233280;
+          var j = Math.floor(r / 233280 * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
       }
-      var fg = document.getElementById("featured-grid");
-      all.slice(0, 12).forEach(function (g) {
-        var el = U.el("a", {
-          cls: "game-card",
-          attrs: { href: "jogos3.html?id=" + encodeURIComponent(g.id) }
+      function renderSection(id, list, ribbonLabel, ribbonCls) {
+        var fg = document.getElementById(id);
+        list.forEach(function (g) {
+          var el = U.el("a", {
+            cls: "game-card",
+            attrs: { href: "jogos3.html?id=" + encodeURIComponent(g.id) }
+          });
+          el.innerHTML =
+            (ribbonLabel ? '<div class="gc-ribbon ' + ribbonCls + '">' + ribbonLabel + '</div>' : '') +
+            '<div class="gc-rtp">' + (g.rtp ? Math.round(g.rtp*100) + "%" : "") + '</div>' +
+            '<div class="gc-thumb" style="background-image:url(' + Assets.gameThumb(g.id) + ')"></div>' +
+            '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">' + U.escapeHtml(g.brandName) + '</div></div>';
+          fg.appendChild(el);
         });
-        el.innerHTML =
-          '<div class="gc-ribbon">HOT</div>' +
-          '<div class="gc-art">' + g.icon + '</div>' +
-          '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">' + U.escapeHtml(g.brandName) + '</div></div>';
-        fg.appendChild(el);
-      });
+      }
+      var pop = shuffle(all, 6726).slice(0, 9);
+      var nov = shuffle(all, 172).slice(0, 9);
+      var rec = shuffle(all, 9090).slice(0, 9);
+      renderSection("popular-grid", pop, "HOT", "hot");
+      renderSection("new-grid", nov, "NOVO", "new");
+      renderSection("recommended-grid", rec, "TOP", "top");
 
       // Leaderboard
       App.renderLeaderboard(document.getElementById("leaderboard"), 6);
@@ -167,7 +239,7 @@
           var win = profit > 0;
           var el = U.el("div", { cls: "tx-item " + (win ? "win" : "bet") });
           el.innerHTML =
-            '<div class="icon">' + (win ? "🏆" : "🎲") + '</div>' +
+            '<div class="icon"><img class="icon-img" src="../assets/images/icons/' + (win ? "trophy" : "slot") + '.svg" alt=""/></div>' +
             '<div class="body"><div class="t">' + U.escapeHtml(h.game_name) + '</div><div class="s">' + U.fmtDateTime(h.ts) + ' • aposta ' + U.formatBRL(h.bet) + '</div></div>' +
             '<div class="amt">' + (win ? "+" : "") + U.formatBRL(profit) + '</div>';
           wrap.appendChild(el);

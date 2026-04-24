@@ -11,16 +11,21 @@
 <body>
   <div class="container section">
     <div class="tabs mb-16" id="tabs">
-      <div class="tab active" data-tab="vip">👑 VIP</div>
-      <div class="tab" data-tab="bonus">🎁 Bônus</div>
-      <div class="tab" data-tab="events">🎉 Eventos</div>
+      <div class="tab active" data-tab="vip"><img class="icon-img sm" src="../assets/images/icons/crown.svg" alt=""/> VIP</div>
+      <div class="tab" data-tab="bonus"><img class="icon-img sm" src="../assets/images/icons/gift.svg" alt=""/> Bônus</div>
+      <div class="tab" data-tab="events"><img class="icon-img sm" src="../assets/images/icons/flame.svg" alt=""/> Eventos</div>
     </div>
 
     <!-- VIP -->
     <section id="tab-vip">
       <div class="vip-hero anim-slide">
-        <div class="v-level">NÍVEL ATUAL</div>
-        <div class="v-name" id="vip-name">VIP 0 — Bronze</div>
+        <div class="v-head">
+          <img id="vip-badge-img" alt="VIP"/>
+          <div style="flex:1">
+            <div class="v-level">NÍVEL ATUAL</div>
+            <div class="v-name" id="vip-name">VIP 0 — Bronze</div>
+          </div>
+        </div>
         <div class="v-progress"><div class="v-bar" id="vip-bar" style="width:0%"></div></div>
         <div class="v-stats">
           <span id="vip-pts">0 pts</span>
@@ -40,7 +45,7 @@
     <!-- BONUS -->
     <section id="tab-bonus" class="hidden">
       <div class="bonus-item anim-slide">
-        <div class="b-ico">🎁</div>
+        <div class="b-ico"><img class="icon-img xl" src="../assets/images/icons/gift.svg" alt=""/></div>
         <div class="b-body">
           <div class="b-t">Bônus diário</div>
           <div class="b-d" id="daily-info">Resgate uma vez por dia.</div>
@@ -49,7 +54,7 @@
       </div>
 
       <div class="bonus-item mt-12">
-        <div class="b-ico">🌟</div>
+        <div class="b-ico"><img class="icon-img xl" src="../assets/images/icons/star.svg" alt=""/></div>
         <div class="b-body">
           <div class="b-t">Bônus de cadastro</div>
           <div class="b-d" id="signup-info">Oferta para novos jogadores.</div>
@@ -58,7 +63,7 @@
       </div>
 
       <div class="bonus-item mt-12">
-        <div class="b-ico">💎</div>
+        <div class="b-ico"><img class="icon-img xl" src="../assets/images/icons/lightning.svg" alt=""/></div>
         <div class="b-body">
           <div class="b-t">Cashback VIP</div>
           <div class="b-d">Quanto maior seu nível VIP, maior o cashback semanal (ativado pelo admin).</div>
@@ -69,7 +74,7 @@
 
     <!-- EVENTOS -->
     <section id="tab-events" class="hidden">
-      <div class="card">
+      <div class="card glass">
         <div class="card-title">Eventos ativos</div>
         <div id="events-list">
           <div class="muted small">Nenhum evento no momento. Fique de olho!</div>
@@ -93,6 +98,7 @@
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script>
@@ -123,6 +129,8 @@
       var remaining = lvl < 10 ? (500 - (pts % 500)) : 0;
       var progressPct = lvl < 10 ? Math.round(((pts % 500) / 500) * 100) : 100;
       document.getElementById("vip-name").textContent = "VIP " + lvl + " — " + names[lvl];
+      document.getElementById("vip-badge-img").src = Assets.vip(lvl);
+      document.getElementById("vip-badge-img").className = "vip-badge-img";
       document.getElementById("vip-pts").textContent = pts + " pts";
       document.getElementById("vip-next").textContent = lvl < 10 ? ("Próximo: " + remaining + " pts") : "Nível máximo";
       document.getElementById("vip-bar").style.width = progressPct + "%";
@@ -131,7 +139,7 @@
       var vipWrap = document.getElementById("vip-levels");
       for (var i = 0; i <= 10; i++) {
         var el = U.el("div", { cls: "vip-level" + (i === lvl ? " current" : "") });
-        el.innerHTML = '<div class="ll">' + i + '</div><div class="ln">' + names[i] + '</div><div class="lb">Cashback ' + (i * 2) + '%</div>';
+        el.innerHTML = '<img class="vip-badge-img" src="' + Assets.vip(i) + '" alt="VIP ' + i + '" style="width:54px;height:54px"/><div class="ln">' + names[i] + '</div><div class="lb">Cashback ' + (i * 2) + '%</div>';
         vipWrap.appendChild(el);
       }
 
@@ -170,8 +178,8 @@
       var ev = document.getElementById("events-list");
       if (cfg.events_enabled) {
         ev.innerHTML =
-          '<div class="bonus-item"><div class="b-ico">🔥</div><div class="b-body"><div class="b-t">Happy Hour — Fim de semana</div><div class="b-d">Chance de vitória aumentada em jogos Tigrinho e Dragon.</div></div></div>' +
-          '<div class="bonus-item mt-12"><div class="b-ico">🎊</div><div class="b-body"><div class="b-t">Missão Fortune</div><div class="b-d">Aposte R$ 100 na marca Fortune para receber R$ 10.</div></div></div>';
+          '<div class="bonus-item"><div class="b-ico"><img class="icon-img xl" src="../assets/images/icons/flame.svg" alt=""/></div><div class="b-body"><div class="b-t">Happy Hour — Fim de semana</div><div class="b-d">Chance de vitória aumentada em jogos Tigrinho e Dragon.</div></div></div>' +
+          '<div class="bonus-item mt-12"><div class="b-ico"><img class="icon-img xl" src="../assets/images/icons/trophy.svg" alt=""/></div><div class="b-body"><div class="b-t">Missão Fortune</div><div class="b-d">Aposte R$ 100 na marca Fortune para receber R$ 10.</div></div></div>';
       } else {
         ev.innerHTML = '<div class="muted small">Eventos temporariamente desabilitados.</div>';
       }

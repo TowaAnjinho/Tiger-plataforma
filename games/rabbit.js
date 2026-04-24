@@ -22,7 +22,7 @@
       id: "rabbit-" + String(i + 1).padStart(2, "0"),
       name: "Rabbit " + themes[i],
       description: "Slot do Coelho — " + themes[i],
-      minBet: 1, maxBet: 500,
+      minBet: 0.10, maxBet: 500,
       rtp: 0.91 + (i % 5) * 0.008,
       symbols: symbols,
       theme: { bg: "linear-gradient(135deg, #2a1133, #0a0a12)", accent: "#ff3d85" },

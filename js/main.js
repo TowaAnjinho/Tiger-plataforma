@@ -76,11 +76,12 @@
     var existing = document.querySelector(".bottom-nav");
     if (existing) existing.remove();
     var base = pathBase();
+    var assetsBase = location.pathname.indexOf("/pages/") !== -1 ? "../assets/images/icons/" : "assets/images/icons/";
     var items = [
-      { key: "inicio", label: "Início", ico: "🏠", href: base + "pages/dashboard.html" },
-      { key: "bonus", label: "Bônus", ico: "🎁", href: base + "pages/vip.html#bonus" },
-      { key: "vip", label: "VIP", ico: "👑", href: base + "pages/vip.html" },
-      { key: "perfil", label: "Perfil", ico: "👤", href: base + "pages/perfil.html" }
+      { key: "inicio", label: "Início", ico: "home", href: base + "pages/dashboard.html" },
+      { key: "bonus", label: "Bônus", ico: "gift", href: base + "pages/vip.html#bonus" },
+      { key: "vip", label: "VIP", ico: "crown", href: base + "pages/vip.html" },
+      { key: "perfil", label: "Perfil", ico: "user", href: base + "pages/perfil.html" }
     ];
     var nav = document.createElement("nav");
     nav.className = "bottom-nav";
@@ -90,7 +91,7 @@
       var b = document.createElement("a");
       b.className = "nav-item" + (active === it.key ? " active" : "");
       b.href = it.href;
-      b.innerHTML = '<div class="ico">' + it.ico + '</div><div>' + it.label + '</div>';
+      b.innerHTML = '<img src="' + assetsBase + it.ico + '.svg" alt=""/><div>' + it.label + '</div>';
       inner.appendChild(b);
     });
     nav.appendChild(inner);

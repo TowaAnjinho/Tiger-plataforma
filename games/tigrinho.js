@@ -22,7 +22,7 @@
       id: "tigrinho-" + String(i + 1).padStart(2, "0"),
       name: "Tigrinho " + themes[i],
       description: "O famoso Tigrinho — " + themes[i],
-      minBet: 1, maxBet: 1000,
+      minBet: 0.10, maxBet: 1000,
       rtp: 0.92 + (i % 4) * 0.005,
       symbols: symbols,
       theme: { bg: "linear-gradient(135deg, #3a2a0b, #0a0a12)", accent: "#ffd65a" },
