@@ -19,15 +19,19 @@
     </div>
 
     <div class="tabs mb-16" id="tabs">
-      <div class="tab active" data-tab="kpis">📊 Economia</div>
-      <div class="tab" data-tab="users">👥 Usuários</div>
-      <div class="tab" data-tab="chats">💬 Chats</div>
-      <div class="tab" data-tab="txs">💸 Transações</div>
-      <div class="tab" data-tab="cfg">⚙️ Config</div>
+      <div class="tab active" data-tab="kpis"><img class="icon-img sm" src="../assets/images/icons/trophy.svg" alt=""/> Economia</div>
+      <div class="tab" data-tab="users"><img class="icon-img sm" src="../assets/images/icons/user.svg" alt=""/> Usuários</div>
+      <div class="tab" data-tab="chats"><img class="icon-img sm" src="../assets/images/icons/chat.svg" alt=""/> Chats</div>
+      <div class="tab" data-tab="txs"><img class="icon-img sm" src="../assets/images/icons/wallet.svg" alt=""/> Transações</div>
+      <div class="tab" data-tab="cfg"><img class="icon-img sm" src="../assets/images/icons/settings.svg" alt=""/> Config</div>
     </div>
 
     <section id="tab-kpis">
       <div class="admin-grid-kpi" id="kpis"></div>
+      <div class="card glass mt-16">
+        <div class="card-title">Fluxo da economia (últimas transações)</div>
+        <svg id="econ-chart" viewBox="0 0 600 180" style="width:100%; height:180px"></svg>
+      </div>
       <div class="card mt-16">
         <div class="card-title">Top ganhadores</div>
         <div id="top-winners"></div>
@@ -81,6 +85,7 @@
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/admin.js"></script>
@@ -111,6 +116,46 @@
       function renderKpis() {
         Admin.renderKpis(document.getElementById("kpis"));
         App.renderLeaderboard(document.getElementById("top-winners"), 10);
+        renderEconChart();
+      }
+
+      function renderEconChart() {
+        var svg = document.getElementById("econ-chart");
+        if (!svg) return;
+        var all = (DB.getTransactions ? DB.getTransactions() : []) || [];
+        // Order from oldest to newest for cumulative balance
+        var txs = all.slice().reverse().slice(-40);
+        var w = 600, h = 180, pad = 20;
+        if (!txs.length) { svg.innerHTML = '<text x="300" y="90" text-anchor="middle" fill="#676a82">Sem dados suficientes.</text>'; return; }
+        var balance = 0;
+        var pts = txs.map(function (t) {
+          var delta = (t.type === "deposit" || t.type === "win" || t.type === "bonus") ? t.amount : -t.amount;
+          balance += delta;
+          return balance;
+        });
+        var maxv = Math.max.apply(null, pts.map(Math.abs)) || 1;
+        var stepX = (w - 2 * pad) / Math.max(1, pts.length - 1);
+        var poly = pts.map(function (v, i) {
+          var x = pad + i * stepX;
+          var y = h / 2 - (v / maxv) * (h / 2 - pad);
+          return x.toFixed(1) + "," + y.toFixed(1);
+        }).join(" ");
+        var area = "M " + pad + "," + (h / 2) + " L " + poly.replace(/ /g, " L ") + " L " + (w - pad) + "," + (h / 2) + " Z";
+        svg.innerHTML =
+          '<defs>' +
+          '  <linearGradient id="ec-fill" x1="0" y1="0" x2="0" y2="1">' +
+          '    <stop offset="0%" stop-color="#ffd65a" stop-opacity="0.55"/>' +
+          '    <stop offset="100%" stop-color="#ffd65a" stop-opacity="0"/>' +
+          '  </linearGradient>' +
+          '</defs>' +
+          '<line x1="' + pad + '" y1="' + (h / 2) + '" x2="' + (w - pad) + '" y2="' + (h / 2) + '" stroke="#262640" stroke-dasharray="4 4"/>' +
+          '<path d="' + area + '" fill="url(#ec-fill)"/>' +
+          '<polyline points="' + poly + '" fill="none" stroke="#ffd65a" stroke-width="2.5" stroke-linejoin="round"/>' +
+          pts.map(function (v, i) {
+            var x = pad + i * stepX;
+            var y = h / 2 - (v / maxv) * (h / 2 - pad);
+            return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.5" fill="#ff3d85"/>';
+          }).join("");
       }
       function renderUsers() {
         var q = document.getElementById("q-user").value.trim();

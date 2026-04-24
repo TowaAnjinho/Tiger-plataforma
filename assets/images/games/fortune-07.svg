@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true"><defs>
+  <linearGradient id="bg-gt-fortune-6" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#0b3b1a"/>
+    <stop offset="100%" stop-color="#0a0a12"/>
+  </linearGradient>
+  <radialGradient id="glow-gt-fortune-6" cx="50%" cy="50%" r="60%">
+    <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.55"/>
+    <stop offset="60%" stop-color="#16a34a" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="gold-gt-fortune-6" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#fde68a"/>
+    <stop offset="50%" stop-color="#f59e0b"/>
+    <stop offset="100%" stop-color="#16a34a"/>
+  </linearGradient>
+  <filter id="blur-gt-fortune-6" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="8"/>
+  </filter>
+  <filter id="shadow-gt-fortune-6" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.45"/>
+  </filter>
+  <filter id="neon-gt-fortune-6" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="4" result="b"/>
+    <feMerge>
+      <feMergeNode in="b"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs><rect width="400" height="400" fill="url(#bg-gt-fortune-6)"/><circle cx="200.0" cy="200.0" r="44" fill="none" stroke="#fde68a" stroke-width="2" opacity="0.40"/><circle cx="200.0" cy="200.0" r="84" fill="none" stroke="#fde68a" stroke-width="2" opacity="0.34"/><circle cx="200.0" cy="200.0" r="124" fill="none" stroke="#fde68a" stroke-width="2" opacity="0.28"/><circle cx="200.0" cy="200.0" r="164" fill="none" stroke="#fde68a" stroke-width="2" opacity="0.22"/><circle cx="200.0" cy="200.0" r="204" fill="none" stroke="#fde68a" stroke-width="2" opacity="0.16"/><circle cx="5.4" cy="103.0" r="0.62" fill="#ffffff" opacity="0.79"/><circle cx="288.2" cy="48.6" r="0.75" fill="#ffffff" opacity="0.28"/><circle cx="148.3" cy="383.3" r="1.18" fill="#ffffff" opacity="0.27"/><circle cx="359.8" cy="296.2" r="0.72" fill="#ffffff" opacity="0.25"/><circle cx="252.1" cy="14.2" r="0.74" fill="#ffffff" opacity="0.73"/><circle cx="255.2" cy="343.2" r="1.51" fill="#ffffff" opacity="0.82"/><circle cx="387.5" cy="45.7" r="0.63" fill="#ffffff" opacity="0.32"/><circle cx="55.1" cy="147.7" r="0.73" fill="#ffffff" opacity="0.64"/><circle cx="73.2" cy="396.8" r="0.65" fill="#ffffff" opacity="0.85"/><circle cx="337.3" cy="163.3" r="1.54" fill="#ffffff" opacity="0.67"/><circle cx="19.4" cy="14.8" r="1.50" fill="#ffffff" opacity="0.77"/><circle cx="213.8" cy="360.5" r="1.08" fill="#ffffff" opacity="0.25"/><circle cx="230.2" cy="389.6" r="0.83" fill="#ffffff" opacity="0.53"/><circle cx="121.3" cy="222.9" r="1.69" fill="#ffffff" opacity="0.44"/><circle cx="360.7" cy="281.4" r="0.74" fill="#ffffff" opacity="0.73"/><circle cx="368.2" cy="127.2" r="0.80" fill="#ffffff" opacity="0.69"/><circle cx="244.3" cy="145.7" r="0.59" fill="#ffffff" opacity="0.79"/><circle cx="36.1" cy="208.5" r="1.74" fill="#ffffff" opacity="0.58"/><circle cx="47.3" cy="123.3" r="1.37" fill="#ffffff" opacity="0.54"/><circle cx="371.9" cy="19.4" r="1.26" fill="#ffffff" opacity="0.44"/><circle cx="269.4" cy="234.0" r="1.79" fill="#ffffff" opacity="0.62"/><circle cx="238.3" cy="147.4" r="1.59" fill="#ffffff" opacity="0.57"/><circle cx="51.8" cy="297.2" r="1.45" fill="#ffffff" opacity="0.81"/><circle cx="279.9" cy="305.8" r="1.36" fill="#ffffff" opacity="0.44"/><circle cx="108.3" cy="7.9" r="0.52" fill="#ffffff" opacity="0.38"/><circle cx="105.4" cy="11.6" r="0.80" fill="#ffffff" opacity="0.79"/><circle cx="161.1" cy="39.2" r="0.80" fill="#ffffff" opacity="0.56"/><circle cx="117.1" cy="244.4" r="0.93" fill="#ffffff" opacity="0.31"/><circle cx="203.4" cy="345.8" r="0.90" fill="#ffffff" opacity="0.83"/><circle cx="330.6" cy="29.4" r="1.48" fill="#ffffff" opacity="0.62"/><line x1="251.1" y1="180.0" x2="346.0" y2="180.0" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="246.0" y1="202.2" x2="331.5" y2="243.3" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="231.9" y1="220.0" x2="291.0" y2="294.1" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="211.4" y1="229.8" x2="232.5" y2="322.3" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="188.6" y1="229.8" x2="167.5" y2="322.3" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="168.1" y1="220.0" x2="109.0" y2="294.1" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="154.0" y1="202.2" x2="68.5" y2="243.3" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="148.9" y1="180.0" x2="54.0" y2="180.0" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="154.0" y1="157.8" x2="68.5" y2="116.7" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="168.1" y1="140.0" x2="109.0" y2="65.9" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="188.6" y1="130.2" x2="167.5" y2="37.7" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="211.4" y1="130.2" x2="232.5" y2="37.7" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="231.9" y1="140.0" x2="291.0" y2="65.9" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><line x1="246.0" y1="157.8" x2="331.5" y2="116.7" stroke="#fde68a" stroke-width="2" opacity="0.55" stroke-linecap="round"/><g transform="translate(200.0 180.0)">
+      <circle r="110.0" fill="#ffd65a" stroke="#7a5100" stroke-width="8.8"/>
+      <circle r="85.8" fill="none" stroke="#b57e05" stroke-width="6.6" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="41.8" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="132.0" fill="#b57e05">$</text>
+      <ellipse cx="-38.5" cy="-38.5" rx="38.5" ry="19.8" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(70 70)">
+      <circle r="26" fill="#ffd65a" stroke="#7a5100" stroke-width="2.1"/>
+      <circle r="20.3" fill="none" stroke="#b57e05" stroke-width="1.6" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="9.9" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="31.2" fill="#b57e05">$</text>
+      <ellipse cx="-9.1" cy="-9.1" rx="9.1" ry="4.7" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(330 70)">
+      <circle r="22" fill="#ffd65a" stroke="#7a5100" stroke-width="1.8"/>
+      <circle r="17.2" fill="none" stroke="#b57e05" stroke-width="1.3" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="8.4" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="26.4" fill="#b57e05">$</text>
+      <ellipse cx="-7.7" cy="-7.7" rx="7.7" ry="4.0" fill="#ffffff" opacity="0.55"/>
+    </g><g transform="translate(80 320)">
+      <circle r="18" fill="#ffd65a" stroke="#7a5100" stroke-width="1.4"/>
+      <circle r="14.0" fill="none" stroke="#b57e05" stroke-width="1.1" stroke-dasharray="2 3" opacity="0.8"/>
+      <text x="0" y="6.8" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="21.6" fill="#b57e05">$</text>
+      <ellipse cx="-6.3" cy="-6.3" rx="6.3" ry="3.2" fill="#ffffff" opacity="0.55"/>
+    </g><g>
+      <path d="M 340 308 L 355.4 325.6 L 348.8 352 L 331.2 352 L 324.6 325.6 Z" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" opacity="0.95"/>
+      <path d="M 329.0 326.7 L 351.0 326.7" stroke="#e0f7ff" stroke-width="1.5" opacity="0.8"/>
+      <path d="M 340 308 L 340 352" stroke="#e0f7ff" stroke-width="1" opacity="0.5"/>
+      <path d="M 334.5 316.8 L 337.8 321.2" stroke="#ffffff" stroke-width="2" opacity="0.9"/>
+    </g><g transform="translate(0 310)">
+          <rect x="0" y="0" width="400" height="90" fill="rgba(0,0,0,0.55)"/>
+          <rect x="0" y="0" width="400" height="3" fill="url(#gold-gt-fortune-6)"/>
+          <text x="200.0" y="38" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="24" fill="url(#gold-gt-fortune-6)" filter="url(#shadow-gt-fortune-6)">FORTUNE VAULT</text>
+          <text x="200.0" y="64" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600" font-size="13" fill="#ffffff" opacity="0.85">FORTUNE • 6726.BET</text>
+        </g></svg>

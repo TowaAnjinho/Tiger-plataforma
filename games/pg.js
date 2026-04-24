@@ -22,7 +22,7 @@
       id: "pg-" + String(i + 1).padStart(2, "0"),
       name: "PG " + themes[i],
       description: "Coleção PG — " + themes[i],
-      minBet: 1, maxBet: 500,
+      minBet: 0.10, maxBet: 500,
       rtp: 0.92 + (i % 5) * 0.004,
       symbols: symbols,
       theme: { bg: "linear-gradient(135deg, #0a2d3a, #0a0a12)", accent: "#22d3ee" },

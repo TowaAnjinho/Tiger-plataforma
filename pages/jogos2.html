@@ -17,11 +17,14 @@
 
     <div class="brand-strip mb-16" id="brand-strip"></div>
 
+    <div class="hero-carousel mb-16" id="brand-hero" style="aspect-ratio:800/360"></div>
+
     <div class="game-grid" id="games-grid"></div>
   </div>
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/games.js"></script>
@@ -51,12 +54,19 @@
         strip.appendChild(c);
       });
 
+      // Brand hero banner
+      var hero = document.getElementById("brand-hero");
+      hero.innerHTML = '<div class="hc-track"><div class="hc-slide"><img src="' + Assets.brandBanner(brand.key) + '" alt="' + U.escapeHtml(brand.name) + '"/></div></div>';
+
       var grid = document.getElementById("games-grid");
-      brand.games.forEach(function (g) {
+      brand.games.forEach(function (g, i) {
+        var ribbon = i < 3 ? '<div class="gc-ribbon top">DESTAQUE</div>' : (i < 7 ? '<div class="gc-ribbon hot">HOT</div>' : '');
         var el = U.el("a", { cls: "game-card", attrs: { href: "jogos3.html?id=" + encodeURIComponent(g.id) } });
         el.innerHTML =
-          '<div class="gc-art">' + g.icon + '</div>' +
-          '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">RTP ' + Math.round(g.rtp * 100) + '%</div></div>';
+          ribbon +
+          '<div class="gc-rtp">' + Math.round(g.rtp * 100) + '%</div>' +
+          '<div class="gc-thumb" style="background-image:url(' + Assets.gameThumb(g.id) + ')"></div>' +
+          '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">' + U.escapeHtml(brand.name) + '</div></div>';
         grid.appendChild(el);
       });
     })();

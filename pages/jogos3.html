@@ -19,6 +19,10 @@
       <div style="width:36px"></div>
     </div>
 
+    <div class="card glass mb-12" id="game-banner" style="padding:0; overflow:hidden; border-radius:18px">
+      <img id="game-thumb-big" alt="" style="width:100%; display:block"/>
+    </div>
+
     <div class="slot-wrap anim-slide" id="slot-wrap">
       <div class="slot-machine" id="slot-machine">
         <div class="reels" id="reels">
@@ -63,6 +67,7 @@
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/games.js"></script>
@@ -87,6 +92,7 @@
       document.getElementById("game-title").textContent = game.icon + " " + game.name;
       document.getElementById("game-sub").textContent = game.brandName + " • " + (game.description || "");
       document.getElementById("meta-rtp").textContent = Math.round(game.rtp * 100) + "%";
+      document.getElementById("game-thumb-big").src = Assets.gameThumb(game.id);
       document.getElementById("meta-min").textContent = U.formatBRL(game.minBet);
       document.getElementById("meta-max").textContent = U.formatBRL(game.maxBet);
 
@@ -95,7 +101,7 @@
       balEl.textContent = U.formatBRL(DB.getUser(user.username).balance);
 
       var bet = game.minBet;
-      var betSteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000].filter(function (v) {
+      var betSteps = [0.1, 0.25, 0.5, 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000].filter(function (v) {
         return v >= game.minBet && v <= game.maxBet;
       });
       if (!betSteps.length) betSteps = [game.minBet];

@@ -34,6 +34,7 @@
 
   <script src="../js/utils.js"></script>
   <script src="../js/database.js"></script>
+  <script src="../js/assets.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/games.js"></script>
@@ -54,11 +55,10 @@
       brands.forEach(function (b) {
         var el = U.el("a", {
           cls: "brand-card",
-          attrs: { href: "jogos2.html?brand=" + encodeURIComponent(b.key) },
-          style: { background: "linear-gradient(135deg," + b.color + "55, #0a0a12)" }
+          attrs: { href: "jogos2.html?brand=" + encodeURIComponent(b.key) }
         });
         el.innerHTML =
-          '<div class="brand-bg">' + b.icon + '</div>' +
+          '<div class="brand-img" style="background-image:url(' + Assets.brandBanner(b.key) + ')"></div>' +
           '<div class="brand-label">' + U.escapeHtml(b.name) + ' <small>' + b.games.length + ' jogos</small></div>';
         bg.appendChild(el);
       });
@@ -79,7 +79,8 @@
             attrs: { href: "jogos3.html?id=" + encodeURIComponent(g.id) }
           });
           el.innerHTML =
-            '<div class="gc-art">' + g.icon + '</div>' +
+            '<div class="gc-rtp">' + (g.rtp ? Math.round(g.rtp*100) + "%" : "") + '</div>' +
+            '<div class="gc-thumb" style="background-image:url(' + Assets.gameThumb(g.id) + ')"></div>' +
             '<div class="gc-name"><div class="n">' + U.escapeHtml(g.name) + '</div><div class="t">' + U.escapeHtml(g.brandName) + '</div></div>';
           fg.appendChild(el);
         });

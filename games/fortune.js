@@ -22,7 +22,7 @@
       id: "fortune-" + String(i + 1).padStart(2, "0"),
       name: "Fortune " + themes[i],
       description: "Fortune — " + themes[i],
-      minBet: 1, maxBet: 1000,
+      minBet: 0.10, maxBet: 1000,
       rtp: 0.92 + (i % 5) * 0.006,
       symbols: symbols,
       theme: { bg: "linear-gradient(135deg, #0a3a1a, #0a0a12)", accent: "#22c55e" },
