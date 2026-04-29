@@ -31,7 +31,7 @@
     });
   };
 
-  Admin.renderUsers = function (container, filter) {
+  Admin.renderUsers = function (container, filter, sort) {
     var users = DB.listUsers();
     if (filter) {
       var q = filter.toLowerCase();
@@ -39,28 +39,43 @@
         return u.username.indexOf(q) !== -1 || (u.nickname || "").toLowerCase().indexOf(q) !== -1;
       });
     }
+    var sorters = {
+      created_desc: function (a, b) { return (b.created_at || 0) - (a.created_at || 0); },
+      created_asc:  function (a, b) { return (a.created_at || 0) - (b.created_at || 0); },
+      balance_desc: function (a, b) { return Number(b.balance || 0) - Number(a.balance || 0); },
+      balance_asc:  function (a, b) { return Number(a.balance || 0) - Number(b.balance || 0); },
+      name_asc:     function (a, b) { return String(a.username).localeCompare(String(b.username)); },
+      name_desc:    function (a, b) { return String(b.username).localeCompare(String(a.username)); },
+      won_desc:     function (a, b) { return Number(b.total_won || 0) - Number(a.total_won || 0); },
+      bet_desc:     function (a, b) { return Number(b.total_bet || 0) - Number(a.total_bet || 0); }
+    };
+    users.sort(sorters[sort] || sorters.created_desc);
+
     container.innerHTML = "";
     var table = document.createElement("table");
     table.className = "admin-table";
     table.innerHTML =
       '<thead><tr>' +
-      '<th>Usuário</th><th>Saldo</th><th>Apostado</th><th>Ganho</th><th>VIP</th><th>Modo Vitória</th><th>Ações</th>' +
+      '<th>#</th><th>Usuário</th><th>Saldo</th><th>Apostado</th><th>Ganho</th><th>VIP</th><th>Modo Vitória</th><th>Criado</th><th>Ações</th>' +
       '</tr></thead><tbody></tbody>';
     var tb = table.querySelector("tbody");
     if (!users.length) {
-      tb.innerHTML = '<tr><td colspan="7" class="muted center">Nenhum usuário.</td></tr>';
+      tb.innerHTML = '<tr><td colspan="9" class="muted center">Nenhum usuário cadastrado. Use "+ Novo usuário" ou "Criar usuários de demonstração".</td></tr>';
     } else {
-      users.forEach(function (u) {
+      users.forEach(function (u, idx) {
         var wm = DB.getWinningMode(u.username);
         var wmLabel = wm === "always" ? "Sempre" : wm === "never" ? "Nunca" : wm && wm.boost ? ("Boost " + Math.round(wm.boost * 100) + "%") : "Padrão";
         var tr = document.createElement("tr");
+        var created = u.created_at ? new Date(u.created_at).toLocaleDateString("pt-BR") : "—";
         tr.innerHTML =
+          '<td class="muted">' + (idx + 1) + '</td>' +
           '<td><strong>' + U.escapeHtml(u.username) + '</strong>' + (u.banned ? ' <span class="badge red">BANIDO</span>' : '') + '</td>' +
           '<td><span class="gold bold">' + U.formatBRL(u.balance) + '</span></td>' +
           '<td>' + U.formatBRL(u.total_bet || 0) + '</td>' +
           '<td>' + U.formatBRL(u.total_won || 0) + '</td>' +
           '<td>' + (u.vip_points || 0) + '</td>' +
           '<td>' + wmLabel + '</td>' +
+          '<td class="small muted">' + created + '</td>' +
           '<td><div class="actions">' +
           '<button class="btn small secondary" data-act="edit-bal" data-u="' + u.username + '">Saldo</button>' +
           '<button class="btn small secondary" data-act="edit-pwd" data-u="' + u.username + '">Senha</button>' +
@@ -77,7 +92,7 @@
       b.addEventListener("click", function () {
         var act = b.getAttribute("data-act");
         var un = b.getAttribute("data-u");
-        Admin.handleUserAction(act, un, function () { Admin.renderUsers(container, filter); });
+        Admin.handleUserAction(act, un, function () { Admin.renderUsers(container, filter, sort); });
       });
     });
   };
@@ -198,6 +213,136 @@
       tb.appendChild(tr);
     });
     container.appendChild(t);
+  };
+
+  // ---------- Import / Seed / Push (cloud) ----------
+  Admin.mergeImport = function (data) {
+    if (!data || typeof data !== "object") return;
+    // merge users
+    if (data.USERS || data["6726bet.users"]) {
+      var usersIn = data.USERS || data["6726bet.users"] || {};
+      var cur = DB.getAllUsers();
+      for (var k in usersIn) {
+        cur[k] = usersIn[k];
+      }
+      localStorage.setItem("6726bet.users", JSON.stringify(cur));
+    }
+    if (data.TRANSACTIONS || data["6726bet.transactions"]) {
+      var txIn = data.TRANSACTIONS || data["6726bet.transactions"] || [];
+      var curTx = DB.getTransactions();
+      var seen = {};
+      curTx.forEach(function (t) { seen[t.id] = true; });
+      txIn.forEach(function (t) { if (!seen[t.id]) curTx.push(t); });
+      curTx.sort(function (a, b) { return (b.created_at || 0) - (a.created_at || 0); });
+      if (curTx.length > 5000) curTx.length = 5000;
+      localStorage.setItem("6726bet.transactions", JSON.stringify(curTx));
+    }
+    if (data.CHATS || data["6726bet.chats"]) {
+      var chatsIn = data.CHATS || data["6726bet.chats"] || {};
+      var curC = DB.getChats();
+      for (var tid in chatsIn) {
+        if (!curC[tid]) curC[tid] = chatsIn[tid];
+        else {
+          // merge messages
+          var byId = {};
+          curC[tid].messages.forEach(function (m) { byId[m.id] = true; });
+          chatsIn[tid].messages.forEach(function (m) {
+            if (!byId[m.id]) curC[tid].messages.push(m);
+          });
+          curC[tid].messages.sort(function (a, b) { return a.ts - b.ts; });
+          curC[tid].last_ts = Math.max(curC[tid].last_ts || 0, chatsIn[tid].last_ts || 0);
+        }
+      }
+      localStorage.setItem("6726bet.chats", JSON.stringify(curC));
+    }
+  };
+
+  Admin.seedDemoUsers = async function () {
+    var demos = [
+      { username: "carlos",   balance: 125.50, won: 210,  bet: 180 },
+      { username: "ana",      balance: 58.20,  won: 75,   bet: 120 },
+      { username: "bruno",    balance: 340.00, won: 540,  bet: 300 },
+      { username: "diana",    balance: 12.80,  won: 30,   bet: 65 },
+      { username: "eduardo",  balance: 900.00, won: 1200, bet: 520 },
+      { username: "fernanda", balance: 75.00,  won: 95,   bet: 70 }
+    ];
+    for (var i = 0; i < demos.length; i++) {
+      var d = demos[i];
+      if (DB.getUser(d.username)) continue;
+      var hash = "";
+      try { hash = await Auth.hashPassword("demo1234"); } catch (e) { hash = "PLAIN:demo1234"; }
+      DB.createUser({
+        username: d.username, nickname: d.username,
+        email: d.username + "@demo.6726bet",
+        password_hash: hash, balance: d.balance
+      });
+      var u = DB.getUser(d.username);
+      u.total_won = d.won; u.total_bet = d.bet; u.vip_points = Math.floor(d.won * 0.2);
+      DB.saveUser(u);
+    }
+  };
+
+  Admin.pushLocalToCloud = async function () {
+    if (!(global.SB && SB.enabled)) return { users: 0, txs: 0, chats: 0 };
+    var c = SB.client;
+    var n = { users: 0, txs: 0, chats: 0 };
+    // users
+    var users = DB.listUsers().map(function (u) {
+      return {
+        username: u.username, nickname: u.nickname || null, email: u.email || null,
+        password_hash: u.password_hash || "",
+        balance: Number(u.balance || 0),
+        total_bet: Number(u.total_bet || 0), total_won: Number(u.total_won || 0),
+        total_deposited: Number(u.total_deposited || 0), total_withdrawn: Number(u.total_withdrawn || 0),
+        vip_points: Number(u.vip_points || 0),
+        banned: !!u.banned, bonus_claimed_signup: !!u.bonus_claimed_signup,
+        last_login: u.last_login ? new Date(u.last_login).toISOString() : null,
+        created_at: u.created_at ? new Date(u.created_at).toISOString() : new Date().toISOString()
+      };
+    });
+    if (users.length) {
+      var r = await c.from("users").upsert(users);
+      if (!r.error) n.users = users.length;
+    }
+    // chats + messages
+    var chats = DB.getChats();
+    for (var tid in chats) {
+      var t = chats[tid];
+      await c.from("chats").upsert({
+        id: t.id, username: t.username, type: t.type,
+        last_ts: new Date(t.last_ts).toISOString()
+      });
+      n.chats++;
+      if (t.messages && t.messages.length) {
+        var msgs = t.messages.map(function (m) {
+          return {
+            client_id: m.id,
+            thread_id: t.id, from_role: m.from, text: m.text,
+            read_user: !!m.read_user, read_admin: !!m.read_admin,
+            created_at: new Date(m.ts).toISOString()
+          };
+        });
+        // upsert por client_id evita duplicação ao re-executar o push
+        await c.from("chat_messages").upsert(msgs, { onConflict: "client_id" });
+      }
+    }
+    // transactions — upsert por client_id evita duplicação
+    var txs = DB.getTransactions().slice(0, 1000).map(function (t) {
+      return {
+        client_id: t.id,
+        username: t.username, type: t.type, amount: Number(t.amount),
+        label: t.label || null, meta: t.meta || null,
+        created_at: new Date(t.created_at || Date.now()).toISOString()
+      };
+    });
+    if (txs.length) {
+      var rx = await c.from("transactions").upsert(txs, { onConflict: "client_id" });
+      if (!rx.error) n.txs = txs.length;
+    }
+    // config
+    var cfg = DB.getConfig();
+    await c.from("config").upsert({ id: 1, data: cfg, updated_at: new Date().toISOString() });
+    return n;
   };
 
   global.Admin = Admin;

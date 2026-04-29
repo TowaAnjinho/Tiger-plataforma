@@ -111,6 +111,23 @@
       try { U.installAntiDevtools(); } catch (e) {}
     }
 
+    // Sincronização Supabase (não bloqueia a renderização — hidrata em background).
+    App.syncPromise = (async function () {
+      if (global.SB) {
+        try {
+          await SB.init();
+          if (global.Sync) {
+            Sync.install();
+            await Sync.hydrate();
+            Sync.subscribe(function (e) {
+              // Dispara evento global para telas se re-renderizarem sozinhas
+              try { window.dispatchEvent(new CustomEvent("6726bet:sync", { detail: e })); } catch (_) {}
+            });
+          }
+        } catch (e) { console.warn("[App] sync init:", e); }
+      }
+    })();
+
     if (opts.requireAuth) {
       var u = Auth.requireUser();
       if (!u) return null;

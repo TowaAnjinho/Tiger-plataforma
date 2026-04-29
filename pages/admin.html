@@ -40,9 +40,26 @@
 
     <section id="tab-users" class="hidden">
       <div class="card">
-        <div class="row space mb-12">
-          <input type="search" id="q-user" placeholder="Filtrar usuários..." style="max-width:280px" />
-          <button class="btn small primary" id="new-user">+ Novo usuário</button>
+        <div class="row space mb-12" style="flex-wrap:wrap;gap:8px">
+          <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center">
+            <input type="search" id="q-user" placeholder="🔍 Buscar por nome..." style="max-width:260px" />
+            <select id="sort-user" style="max-width:200px">
+              <option value="created_desc">Mais recentes</option>
+              <option value="created_asc">Mais antigos</option>
+              <option value="balance_desc">Saldo (maior)</option>
+              <option value="balance_asc">Saldo (menor)</option>
+              <option value="name_asc">Nome (A→Z)</option>
+              <option value="name_desc">Nome (Z→A)</option>
+              <option value="won_desc">Mais ganharam</option>
+              <option value="bet_desc">Mais apostaram</option>
+            </select>
+            <span class="badge gold" id="users-count">0 usuários</span>
+            <span class="badge cyan small" id="sync-status" title="Estado da sincronização">local</span>
+          </div>
+          <div class="row" style="gap:8px">
+            <button class="btn small secondary" id="refresh-users" title="Recarregar do banco">↻ Atualizar</button>
+            <button class="btn small primary" id="new-user">+ Novo usuário</button>
+          </div>
         </div>
         <div id="users-table"></div>
       </div>
@@ -72,24 +89,60 @@
         <div class="card-title">Configurações da plataforma</div>
         <div id="cfg-list"></div>
       </div>
+
+      <div class="card mt-12">
+        <div class="card-title">Banco de dados em nuvem (Supabase)</div>
+        <div class="small muted mb-12">
+          Conecte um projeto Supabase para sincronizar usuários, transações e chats entre todos os dispositivos.
+          A chave <strong>anon</strong> é pública por design; segurança real é feita por RLS no SQL.
+        </div>
+        <div class="grid" style="gap:8px">
+          <label class="small muted">Project URL</label>
+          <input type="text" id="sb-url" placeholder="https://xxxxxxxx.supabase.co" />
+          <label class="small muted">Anon public key</label>
+          <input type="text" id="sb-key" placeholder="eyJhbGciOi..." />
+          <div class="row" style="gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="sb-save">Salvar e conectar</button>
+            <button class="btn secondary" id="sb-clear">Remover conexão</button>
+            <button class="btn secondary" id="sb-push">Enviar dados locais → nuvem</button>
+          </div>
+          <div class="small muted" id="sb-info">Não conectado.</div>
+        </div>
+      </div>
+
+      <div class="card mt-12">
+        <div class="card-title">Importar / Exportar</div>
+        <div class="small muted mb-12">Útil pra migrar dados entre navegadores quando não há Supabase conectado.</div>
+        <div class="grid grid-2" style="gap:8px">
+          <button class="btn secondary" id="export-all">Exportar JSON</button>
+          <label class="btn secondary" style="text-align:center;cursor:pointer">
+            Importar JSON
+            <input type="file" id="import-file" accept="application/json" style="display:none" />
+          </label>
+        </div>
+      </div>
+
       <div class="card mt-12">
         <div class="card-title">Zona de perigo</div>
-        <div class="small muted mb-12">Ações irreversíveis.</div>
+        <div class="small muted mb-12">Ações irreversíveis (no LocalStorage local — não apaga o Supabase).</div>
         <div class="grid grid-2" style="gap:8px">
-          <button class="btn danger" id="reset-all">Apagar tudo</button>
-          <button class="btn secondary" id="export-all">Exportar JSON</button>
+          <button class="btn danger" id="reset-all">Apagar tudo (local)</button>
+          <button class="btn danger" id="seed-demo">Criar usuários de demonstração</button>
         </div>
       </div>
     </section>
   </div>
 
-  <script src="../js/utils.js"></script>
-  <script src="../js/database.js"></script>
-  <script src="../js/assets.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/main.js"></script>
-  <script src="../js/admin.js"></script>
-  <script src="../js/chat.js"></script>
+  <script src="../js/utils.js?v=1777443848"></script>
+  <script src="../js/database.js?v=1777443848"></script>
+  <script src="../js/config.js?v=1777443848"></script>
+  <script src="../js/supabase_client.js?v=1777443848"></script>
+  <script src="../js/sync.js?v=1777443848"></script>
+  <script src="../js/assets.js?v=1777443848"></script>
+  <script src="../js/auth.js?v=1777443848"></script>
+  <script src="../js/main.js?v=1777443848"></script>
+  <script src="../js/admin.js?v=1777443848"></script>
+  <script src="../js/chat.js?v=1777443848"></script>
   <script>
     (function () {
       App.boot({ requireAdmin: true, nav: false, showBalance: false, showLogout: false });
@@ -159,7 +212,12 @@
       }
       function renderUsers() {
         var q = document.getElementById("q-user").value.trim();
-        Admin.renderUsers(document.getElementById("users-table"), q);
+        var sort = document.getElementById("sort-user").value;
+        Admin.renderUsers(document.getElementById("users-table"), q, sort);
+        document.getElementById("users-count").textContent = DB.listUsers().length + " usuário(s)";
+        var sbEl = document.getElementById("sync-status");
+        if (window.SB && SB.enabled) { sbEl.textContent = "nuvem conectada"; sbEl.className = "badge green small"; }
+        else { sbEl.textContent = "apenas local"; sbEl.className = "badge cyan small"; }
       }
 
       var currentCleanup = null;
@@ -177,6 +235,21 @@
         Auth.logout(); location.replace("login.html");
       });
       document.getElementById("q-user").addEventListener("input", U.debounce(renderUsers, 150));
+      document.getElementById("sort-user").addEventListener("change", renderUsers);
+      document.getElementById("refresh-users").addEventListener("click", async function () {
+        if (window.Sync && SB && SB.enabled) { await Sync.hydrate(); }
+        renderUsers();
+        U.toast("Lista atualizada.", "success");
+      });
+
+      // Live update (re-render on sync events)
+      window.addEventListener("6726bet:sync", function (e) {
+        var section = document.getElementById("tab-users");
+        if (section && !section.classList.contains("hidden")) renderUsers();
+        var kpi = document.getElementById("tab-kpis");
+        if (kpi && !kpi.classList.contains("hidden")) renderKpis();
+      });
+
       document.getElementById("new-user").addEventListener("click", async function () {
         var un = await U.prompt("Nome de usuário:", { title: "Novo usuário" });
         if (!un) return;
@@ -201,6 +274,75 @@
         a.download = "6726bet-export-" + Date.now() + ".json";
         a.click();
       });
+
+      // Import JSON (mescla com o storage local)
+      document.getElementById("import-file").addEventListener("change", function (ev) {
+        var f = ev.target.files && ev.target.files[0];
+        if (!f) return;
+        var reader = new FileReader();
+        reader.onload = async function () {
+          try {
+            var data = JSON.parse(reader.result);
+            var ok = await U.confirm("Importar JSON? Os dados serão mesclados (novos usuários adicionados, existentes atualizados).");
+            if (!ok) return;
+            Admin.mergeImport(data);
+            U.toast("Dados importados.", "success");
+            renderUsers();
+          } catch (e) { U.toast("Arquivo inválido: " + e.message, "error"); }
+        };
+        reader.readAsText(f);
+      });
+
+      // Seed demo users
+      document.getElementById("seed-demo").addEventListener("click", async function () {
+        var ok = await U.confirm("Criar 6 usuários de demonstração (carlos, ana, bruno, diana, eduardo, fernanda)?");
+        if (!ok) return;
+        await Admin.seedDemoUsers();
+        U.toast("Usuários demo criados.", "success");
+        renderUsers();
+      });
+
+      // Supabase config
+      (function () {
+        function showStatus() {
+          var el = document.getElementById("sb-info");
+          var saved = localStorage.getItem("6726bet.supabase_config");
+          if (saved) {
+            try {
+              var cfg = JSON.parse(saved);
+              el.textContent = "Conectado em " + cfg.url + (window.SB && SB.enabled ? " — ✓ online" : " — aguardando conexão (recarregue a página)");
+              el.style.color = window.SB && SB.enabled ? "var(--green, #33d97a)" : "var(--muted)";
+              document.getElementById("sb-url").value = cfg.url;
+              document.getElementById("sb-key").value = cfg.anonKey;
+            } catch (e) {}
+          } else {
+            el.textContent = "Não conectado — tudo só no LocalStorage.";
+          }
+        }
+        showStatus();
+        document.getElementById("sb-save").addEventListener("click", async function () {
+          var url = document.getElementById("sb-url").value.trim();
+          var key = document.getElementById("sb-key").value.trim();
+          if (!/^https:\/\/.*\.supabase\.co\/?$/.test(url)) { U.toast("URL inválida.", "error"); return; }
+          if (!key || key.length < 40) { U.toast("Chave anon inválida.", "error"); return; }
+          SB.saveConfigToLocal(url.replace(/\/$/, ""), key);
+          U.toast("Configuração salva. Recarregando...", "success");
+          setTimeout(function () { location.reload(); }, 900);
+        });
+        document.getElementById("sb-clear").addEventListener("click", async function () {
+          var ok = await U.confirm("Remover conexão Supabase? (os dados locais permanecem).");
+          if (!ok) return;
+          SB.clearConfigFromLocal();
+          location.reload();
+        });
+        document.getElementById("sb-push").addEventListener("click", async function () {
+          if (!(window.SB && SB.enabled)) { U.toast("Conecte o Supabase primeiro.", "warn"); return; }
+          var ok = await U.confirm("Enviar todos os usuários, transações, chats e config deste navegador para a nuvem? Pode sobrescrever dados remotos.");
+          if (!ok) return;
+          var n = await Admin.pushLocalToCloud();
+          U.toast("Enviado: " + n.users + " usuários, " + n.txs + " transações, " + n.chats + " chats.", "success");
+        });
+      })();
 
       showTab("kpis");
     })();

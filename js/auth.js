@@ -107,6 +107,8 @@
     DB.updateConfig({ admin_password_hash: h });
   };
 
+  Auth.hashPassword = hashPwd;
+
   Auth.requireUser = function () {
     var s = Auth.getSession();
     if (!s || s.role !== "user") {

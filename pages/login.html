@@ -39,10 +39,13 @@
     </div>
   </div>
 
-  <script src="../js/utils.js"></script>
-  <script src="../js/database.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/main.js"></script>
+  <script src="../js/utils.js?v=1777443848"></script>
+  <script src="../js/database.js?v=1777443848"></script>
+  <script src="../js/config.js?v=1777443848"></script>
+  <script src="../js/supabase_client.js?v=1777443848"></script>
+  <script src="../js/sync.js?v=1777443848"></script>
+  <script src="../js/auth.js?v=1777443848"></script>
+  <script src="../js/main.js?v=1777443848"></script>
   <script>
     (function () {
       App.boot({ header: false, nav: false, requireAuth: false });
@@ -70,6 +73,7 @@
         }
         U.toast("Bem-vindo!", "success");
         U.sound.coin();
+        try { if (window.Sync && Sync.flush) await Sync.flush(); } catch (_) {}
         setTimeout(function () {
           location.replace(res.admin ? "admin.html" : "dashboard.html");
         }, 400);
