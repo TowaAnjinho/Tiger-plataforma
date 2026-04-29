@@ -46,10 +46,13 @@
       <div class="center tiny muted">Ao criar uma conta você aceita os termos da 6726.Bet.</div>
     </div>
   </div>
-  <script src="../js/utils.js"></script>
-  <script src="../js/database.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/main.js"></script>
+  <script src="../js/utils.js?v=1777443848"></script>
+  <script src="../js/database.js?v=1777443848"></script>
+  <script src="../js/config.js?v=1777443848"></script>
+  <script src="../js/supabase_client.js?v=1777443848"></script>
+  <script src="../js/sync.js?v=1777443848"></script>
+  <script src="../js/auth.js?v=1777443848"></script>
+  <script src="../js/main.js?v=1777443848"></script>
   <script>
     (function () {
       App.boot({ header: false, nav: false, requireAuth: false });
@@ -77,6 +80,8 @@
         U.toast("Conta criada! Bônus de cadastro creditado.", "success", 2400);
         U.sound.win();
         U.coinShower(16);
+        // Garante que escritas pendentes (user + tx) cheguem ao Supabase antes de navegar.
+        try { if (window.Sync && Sync.flush) await Sync.flush(); } catch (_) {}
         setTimeout(function () { location.replace("dashboard.html"); }, 900);
       });
     })();
