@@ -36,6 +36,7 @@ create table if not exists public.config (
 -- transactions: histórico global
 create table if not exists public.transactions (
   id          bigserial primary key,
+  client_id   text unique,         -- ID local (tx_<ts>_<rand>) para deduplicação cross-device
   username    text not null references public.users(username) on delete cascade,
   type        text not null,  -- deposit | withdraw | bet | win | bonus
   amount      numeric(14,2) not null,
@@ -43,6 +44,12 @@ create table if not exists public.transactions (
   meta        jsonb,
   created_at  timestamptz not null default now()
 );
+alter table public.transactions add column if not exists client_id text;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'transactions_client_id_key') then
+    alter table public.transactions add constraint transactions_client_id_key unique (client_id);
+  end if;
+end $$;
 create index if not exists idx_tx_username   on public.transactions(username);
 create index if not exists idx_tx_created_at on public.transactions(created_at desc);
 
@@ -58,6 +65,7 @@ create table if not exists public.chats (
 -- chat_messages
 create table if not exists public.chat_messages (
   id          bigserial primary key,
+  client_id   text unique,         -- ID local (m_<ts>_<rand>) para deduplicação cross-device
   thread_id   text not null references public.chats(id) on delete cascade,
   from_role   text not null,   -- user | admin | system
   text        text not null,
@@ -65,6 +73,12 @@ create table if not exists public.chat_messages (
   read_admin  boolean not null default false,
   created_at  timestamptz not null default now()
 );
+alter table public.chat_messages add column if not exists client_id text;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'chat_messages_client_id_key') then
+    alter table public.chat_messages add constraint chat_messages_client_id_key unique (client_id);
+  end if;
+end $$;
 create index if not exists idx_msg_thread on public.chat_messages(thread_id, created_at);
 
 -- notificações

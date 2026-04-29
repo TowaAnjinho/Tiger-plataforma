@@ -92,7 +92,7 @@
       b.addEventListener("click", function () {
         var act = b.getAttribute("data-act");
         var un = b.getAttribute("data-u");
-        Admin.handleUserAction(act, un, function () { Admin.renderUsers(container, filter); });
+        Admin.handleUserAction(act, un, function () { Admin.renderUsers(container, filter, sort); });
       });
     });
   };
@@ -316,24 +316,27 @@
       if (t.messages && t.messages.length) {
         var msgs = t.messages.map(function (m) {
           return {
+            client_id: m.id,
             thread_id: t.id, from_role: m.from, text: m.text,
             read_user: !!m.read_user, read_admin: !!m.read_admin,
             created_at: new Date(m.ts).toISOString()
           };
         });
-        await c.from("chat_messages").insert(msgs);
+        // upsert por client_id evita duplicação ao re-executar o push
+        await c.from("chat_messages").upsert(msgs, { onConflict: "client_id" });
       }
     }
-    // transactions
+    // transactions — upsert por client_id evita duplicação
     var txs = DB.getTransactions().slice(0, 1000).map(function (t) {
       return {
+        client_id: t.id,
         username: t.username, type: t.type, amount: Number(t.amount),
         label: t.label || null, meta: t.meta || null,
         created_at: new Date(t.created_at || Date.now()).toISOString()
       };
     });
     if (txs.length) {
-      var rx = await c.from("transactions").insert(txs);
+      var rx = await c.from("transactions").upsert(txs, { onConflict: "client_id" });
       if (!rx.error) n.txs = txs.length;
     }
     // config

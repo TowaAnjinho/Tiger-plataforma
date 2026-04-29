@@ -207,17 +207,18 @@
       flushUserBatchNow();
       if (saved) enqueue(function () {
         var cli = c(); if (!cli) return;
-        return cli.from("transactions").insert({
+        return cli.from("transactions").upsert({
+          client_id: saved.id,
           username: saved.username,
           type: saved.type,
           amount: Number(saved.amount),
           label: saved.label || null,
           meta: saved.meta || null,
           created_at: new Date(saved.created_at || Date.now()).toISOString()
-        }).then(function (res) {
-          if (res.error) throw new Error("tx.insert: " + res.error.message);
+        }, { onConflict: "client_id" }).then(function (res) {
+          if (res.error) throw new Error("tx.upsert: " + res.error.message);
         });
-      }, "tx.insert");
+      }, "tx.upsert");
       return saved;
     };
 
@@ -242,18 +243,19 @@
       var m = _postMessage.call(DB, threadId, from, text);
       if (m) enqueue(function () {
         var cli = c(); if (!cli) return;
-        return cli.from("chat_messages").insert({
+        return cli.from("chat_messages").upsert({
+          client_id: m.id,
           thread_id: threadId,
           from_role: from,
           text: String(text),
           read_user: m.read_user,
           read_admin: m.read_admin,
           created_at: new Date(m.ts).toISOString()
-        }).then(function (res) {
-          if (res.error) throw new Error("msg.insert: " + res.error.message);
+        }, { onConflict: "client_id" }).then(function (res) {
+          if (res.error) throw new Error("msg.upsert: " + res.error.message);
           return cli.from("chats").update({ last_ts: new Date(m.ts).toISOString() }).eq("id", threadId);
         });
-      }, "msg.insert");
+      }, "msg.upsert");
       return m;
     };
 
@@ -268,14 +270,16 @@
       }, "winning_mode");
     };
 
-    var _updateConfig = DB.updateConfig;
-    DB.updateConfig = function (partial) {
-      var c2 = _updateConfig.call(DB, partial);
+    // Patch saveConfig (única função que escreve config no LocalStorage).
+    // updateConfig chama saveConfig internamente, então não precisa patchear
+    // ambos — evita double-sync.
+    var _saveConfig = DB.saveConfig;
+    DB.saveConfig = function (cfg) {
+      _saveConfig.call(DB, cfg);
       enqueue(function () {
         var cli = c(); if (!cli) return;
-        return cli.from("config").upsert({ id: 1, data: c2, updated_at: new Date().toISOString() });
+        return cli.from("config").upsert({ id: 1, data: cfg, updated_at: new Date().toISOString() });
       }, "config.upsert");
-      return c2;
     };
 
     var _setBalance = DB.setBalance;
